@@ -6,7 +6,7 @@
 /*   By: eismail <eismail@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 18:07:31 by eismail           #+#    #+#             */
-/*   Updated: 2024/12/14 12:00:10 by eismail          ###   ########.fr       */
+/*   Updated: 2024/12/14 12:47:13 by eismail          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,9 @@
 
 # define CELL 30
 # define PLAYER 5
+# define MINI_W 300
+# define MINI_H 200
+
 
 typedef struct s_ply_info
 {
