@@ -6,7 +6,7 @@
 /*   By: eismail <eismail@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 18:04:11 by eismail           #+#    #+#             */
-/*   Updated: 2024/12/15 12:29:25 by eismail          ###   ########.fr       */
+/*   Updated: 2024/12/15 13:33:47 by eismail          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,6 +143,8 @@ void ft_hook(void* param)
     int cell_x = x / CELL;
     int cell_y = y / CELL;
     // draw_line(line, x, y, x, y, 0xFF000000);
+    data->ply.turn_direction = 0;
+    data->ply.walk_direction = 0;
     if (mlx_is_key_down(mlx, MLX_KEY_ESCAPE))
         mlx_close_window(mlx);
     if (mlx_is_key_down(mlx, MLX_KEY_UP) || mlx_is_key_down(mlx, MLX_KEY_W))
@@ -150,8 +152,8 @@ void ft_hook(void* param)
         if (data->map[(y - 1) / CELL][cell_x] != '1' &&
         data->map[(y - 1) / CELL][(x + PLAYER - 1) / CELL] != '1')
         {
-            player->instances->y -= 1;
-            line->instances->z += 10;
+            // player->instances->y -= 1;
+            data->ply.walk_direction = + 1;
         }
     }
     if (mlx_is_key_down(mlx, MLX_KEY_DOWN) || mlx_is_key_down(mlx, MLX_KEY_S))
@@ -159,7 +161,8 @@ void ft_hook(void* param)
         if (data->map[(y + PLAYER) / CELL][cell_x] != '1' &&
         data->map[(y + PLAYER) / CELL][(x + PLAYER - 1) / CELL] != '1')
         {
-            player->instances->y += 1;
+            // player->instances->y += 1;
+            data->ply.walk_direction = - 1;
         }
     }
     if (mlx_is_key_down(mlx, MLX_KEY_A))
@@ -186,10 +189,14 @@ void ft_hook(void* param)
     {
         data->ply.turn_direction = +1;
     }
+    data->ply.rotation_angle += data->ply.turn_direction * data->ply.rotationSpeed;
+    double movestep = data->ply.walk_direction * data->ply.move_speed;
+    player->instances->x += cos(data->ply.rotation_angle) * movestep;
+    player->instances->y += sin(data->ply.rotation_angle) * movestep;
     mlx_delete_image(mlx, line);
     line = mlx_new_image(data->mlx, data->w * CELL, data->h * CELL);
     mlx_image_to_window(data->mlx, line, 0, 0);
-    draw_line(line, x, y, x + 30, y, 0xFF0000FF);
+    draw_line(line, x, y, x + cos(data->ply.rotation_angle) * 30, y + sin(data->ply.rotation_angle) * 30, 0xFF0000FF);
 }
 
 char **get_map(char *file)
@@ -218,8 +225,8 @@ t_ply_info init_ply()
     ply.turn_direction = 0; // -1 if left , +1 id right
     ply.walk_direction = 0; // -1 if back , +1 id front
     ply.rotation_angle = M_PI / 2;
-    ply.move_speed = 2;
-    ply.rotationSpeed = 2 * (M_PI / 180);
+    ply.move_speed = 3;
+    ply.rotationSpeed = 3 * (M_PI / 180);
     return (ply);
 }
 

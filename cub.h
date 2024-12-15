@@ -6,7 +6,7 @@
 /*   By: eismail <eismail@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 18:07:31 by eismail           #+#    #+#             */
-/*   Updated: 2024/12/14 12:47:13 by eismail          ###   ########.fr       */
+/*   Updated: 2024/12/15 13:20:53 by eismail          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,11 +32,11 @@ typedef struct s_ply_info
     int x;
     int y;
     int radius;
-    int turn_direction;
-    int walk_direction;
-    int rotation_angle;
-    int move_speed;
-    int rotationSpeed;
+    double turn_direction;
+    double walk_direction;
+    double rotation_angle;
+    double move_speed;
+    double rotationSpeed;
 }t_ply_info;
 
 typedef struct s_game
