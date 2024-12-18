@@ -6,7 +6,7 @@
 /*   By: eismail <eismail@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 18:04:11 by eismail           #+#    #+#             */
-/*   Updated: 2024/12/15 13:33:47 by eismail          ###   ########.fr       */
+/*   Updated: 2024/12/18 13:54:40 by eismail          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 
 static mlx_image_t* wall;
 static mlx_image_t* player;
-static mlx_image_t *line;
+// static mlx_image_t *line;
 
 int close_window(int keycode, void *param)
 {
@@ -75,13 +75,13 @@ void desplay_map(t_game *data)
     w = ft_wedth(data->map) * CELL;
     data->h = ft_height(data->map);
     data->w = ft_wedth(data->map);
-    data->mlx = mlx_init(2000, 1500, "cub", true);
+    data->mlx = mlx_init(w, h, "cub", true);
     wall = mlx_new_image(data->mlx, 30, 30);
-    player = mlx_new_image(data->mlx, 5, 5);
-    pint(player, 5, 5, 0xFF0000FF);
+    player = mlx_new_image(data->mlx, PLAYER, PLAYER);
+    pint(player, PLAYER, PLAYER, 0xFF0000FF);
     pint(wall, 30, 30, 0xFFFFFFFF);
-    line = mlx_new_image(data->mlx, w, h);
-    mlx_image_to_window(data->mlx, line, 0, 0);
+    data->line = mlx_new_image(data->mlx, w, h);
+    mlx_image_to_window(data->mlx, data->line, 0, 0);
 
     i = 0;
     j = 0;
@@ -110,93 +110,209 @@ void desplay_map(t_game *data)
 
 void draw_line(mlx_image_t *mlx, int x0, int y0, int x1, int y1, int color)
 {
-    int dx = abs(x1 - x0); // Calculate the difference in x
-    int dy = abs(y1 - y0); // Calculate the difference in y
-    int sx = (x0 < x1) ? 1 : -1; // Determine the step direction for x
-    int sy = (y0 < y1) ? 1 : -1; // Determine the step direction for y
-    int err = dx - dy; // Initialize the error term
+	int dy = y1 - y0;
+	int dx = x1 - x0;
+	int steps = 0;;
+	float	x_inc = 0;
+	float	y_inc = 0;
+	int i = 0;
+	float y = y0;
+	float x = x0;
 
-    while (1)
+	if (abs(dx) > abs(dy))
+		steps = abs(dx);
+	else 
+		steps = abs(dy);
+	x_inc = (float)dx / (float)steps;
+	y_inc = (float)dy / (float)steps;
+	while(i < steps && y >= 0 && x >= 0)
+	{
+		mlx_put_pixel(mlx, round(x), round(y), color);
+		x += x_inc;
+		y += y_inc;
+		i++;
+	}
+}
+
+bool haswall(double x, double y, t_game *data)
+{
+    int cell_x;
+    int cell_y;
+    
+    if (x < 0 || x > (data->w * CELL) || y < 0 || y > (data->h * CELL))
+        return (true);
+    int dx = 0; 
+    while(dx < PLAYER)
     {
-        mlx_put_pixel(mlx, x0, y0, color); // Draw the pixel at the current point
-        if (x0 == x1 && y0 == y1) // If the current point is the endpoint, break the loop
+        int dy = 0;
+        while (dy < PLAYER)
+        {
+            cell_x = floor((x + dx) / CELL);
+            cell_y = floor((y + dy) / CELL);
+            if (data->map[cell_y][cell_x] == '1')
+                return (true);
+            dy += PLAYER - 1;
+        }
+        dx += PLAYER - 1;
+    }
+    return (false);
+}
+
+long h_intersec(t_game *data, double x, double y, double angl)
+{
+    long xinter;
+    long yinter;
+    long xstep;
+    long ystep;
+    long count;
+
+    count = 0;
+    yinter = round(y / CELL) * CELL;
+    xinter = x + ((y - yinter) / tan(angl));
+    xstep = CELL / tan(angl);
+    ystep = CELL;
+    printf("xstep %ld\n",xstep);
+    ystep *= data->up ? -1 : 1;
+    xstep *= (data->left && xstep > 0) ? -1 : 1;
+    xstep *= (data->right && xstep < 0) ? -1 : 1;
+    while ((yinter >= 0 && xinter >= 0 && xinter < (data->w * CELL) && yinter < (data->h * CELL)))
+    {
+        if (data->map[yinter/CELL][xinter/CELL] == 1)
             break;
-        int e2 = err * 2; // Calculate twice the error term
-        if (e2 > -dy) // If e2 is greater than -dy, adjust the error term and x coordinate
-        {
-            err -= dy;
-            x0 += sx;
-        }
-        if (e2 < dx) // If e2 is less than dx, adjust the error term and y coordinate
-        {
-            err += dx;
-            y0 += sy;
-        }
+        xinter += xstep;
+        yinter += CELL;
+        count++;
+    }
+    return (count);
+}
+
+int v_intersec(t_game *data, double x, double y, double angl)
+{
+    long xinter;
+    long yinter;
+    long ystep;
+    long count;
+
+    count = 0;
+    yinter = round(y / CELL) * CELL;
+    xinter = x + ((y - yinter) / tan(angl));
+    ystep = CELL * tan(angl);
+    // printf("ystep %ld\n",ystep);
+    while ((yinter >= 0 && xinter >= 0 && xinter < (data->w * CELL) && yinter < (data->h * CELL)))
+    {
+        // printf("count = %ld \n",count);
+        if (data->map[yinter / CELL][xinter / CELL] == 1)
+            break;
+        xinter += CELL;
+        yinter += ystep;
+        count++;
+    }
+    return (count);
+}
+
+double* closest(t_game *data, double angl)
+{
+    long v_inter;
+    long h_inter;
+    long xstep;
+    long ystep;
+    double *end;
+
+    end = malloc(sizeof(double) * 2);
+    if (!end)
+        return (NULL);
+    xstep = CELL / tan(angl);
+    ystep = CELL * tan(angl);
+    v_inter = v_intersec(data, data->x , data->y, angl);
+    h_inter = h_intersec(data, data->x , data->y, angl);
+    // printf("v = %ld h = %ld\n", v_inter, h_inter);
+    if (v_inter < h_inter)
+    {
+        end[0] = (v_inter * CELL);
+        end[1] = (h_inter * ystep);
+    }
+    else
+    {
+        end[0] = (v_inter * xstep);
+        end[1] = (h_inter * CELL);
+    }
+    return (end);
+}
+
+void cast_all_rays(t_game *data)
+{
+    int colm;
+    double angl;
+    double startx;
+    double starty;
+    // double *end;
+    
+    startx = data->x + (PLAYER) / 2;
+    starty = data->y + (PLAYER) / 2;
+    colm = 0;
+    // angl = data->ply.rotation_angle;
+    angl = fmod(data->ply.rotation_angle , (2 * M_PI));
+    if (angl < 0)
+        angl = (2 * M_PI) + angl;
+    printf("angl %f \n", angl / (M_PI / 180));
+    data->down   = angl > 0 && angl < M_PI;
+    data->up     = !data->down;
+    data->right  = angl < 0.5 * M_PI || angl > 1.5 * M_PI;
+    data->left   = !data->right;
+    // draw_line(data->line, startx, starty, data->x + (cos(angl) * 60), (data->y) + (sin(angl) * 60), 0xFFFF00FF);
+    // end = closest(data, angl / (M_PI / 180));
+    // printf("x = %f y = %f\n", end[0], end[1]);
+    // draw_line(data->line, startx, starty,startx +  end[0], starty + end[1], 0xFFFF00FF);
+    // free(end);
+    angl = data->ply.rotation_angle - (FOV_ANGLE / 2);
+    while (colm < NUM_RAYS)
+    {
+        draw_line(data->line, startx, starty, data->x + (cos(angl) * 60), (data->y) + (sin(angl) * 60), 0xFFFF00FF);
+        colm++;
+        angl += FOV_ANGLE / NUM_RAYS;
     }
 }
+
 void ft_hook(void* param)
 {
     t_game* data = param;
     mlx_t * mlx = data->mlx;
-    int x = player->instances->x;
-    int y = player->instances->y;
-    int cell_x = x / CELL;
-    int cell_y = y / CELL;
-    // draw_line(line, x, y, x, y, 0xFF000000);
+    data->x = player->instances->x;
+    data->y = player->instances->y;
+    double movestep;
+    
     data->ply.turn_direction = 0;
     data->ply.walk_direction = 0;
     if (mlx_is_key_down(mlx, MLX_KEY_ESCAPE))
         mlx_close_window(mlx);
     if (mlx_is_key_down(mlx, MLX_KEY_UP) || mlx_is_key_down(mlx, MLX_KEY_W))
-    {
-        if (data->map[(y - 1) / CELL][cell_x] != '1' &&
-        data->map[(y - 1) / CELL][(x + PLAYER - 1) / CELL] != '1')
-        {
-            // player->instances->y -= 1;
-            data->ply.walk_direction = + 1;
-        }
-    }
+        data->ply.walk_direction = +1;
     if (mlx_is_key_down(mlx, MLX_KEY_DOWN) || mlx_is_key_down(mlx, MLX_KEY_S))
-    {
-        if (data->map[(y + PLAYER) / CELL][cell_x] != '1' &&
-        data->map[(y + PLAYER) / CELL][(x + PLAYER - 1) / CELL] != '1')
-        {
-            // player->instances->y += 1;
-            data->ply.walk_direction = - 1;
-        }
-    }
-    if (mlx_is_key_down(mlx, MLX_KEY_A))
-    {
-        if (data->map[cell_y][(x + PLAYER) / CELL] != '1' && 
-        data->map[(y + PLAYER - 1) / CELL][(x + PLAYER) / CELL] != '1')
-        {
-            player->instances->x -= 1; 
-        }
-    }
-    if (mlx_is_key_down(mlx, MLX_KEY_D))
-    {
-        if (data->map[cell_y][(x + PLAYER) / CELL] != '1' && 
-        data->map[(y + PLAYER - 1) / CELL][(x + PLAYER) / CELL] != '1')
-        {
-            player->instances->x += 1; 
-        }
-    }
+        data->ply.walk_direction = (-1);
+
+    if (mlx_is_key_down(mlx, MLX_KEY_A) && !haswall(data->x-1, data->y, data))
+        player->instances->x -= 1; 
+    if (mlx_is_key_down(mlx, MLX_KEY_D)  && !haswall(data->x+1, data->y, data))
+        player->instances->x += 1; 
+        
     if (mlx_is_key_down(mlx, MLX_KEY_LEFT))
-    {
-        data->ply.turn_direction = -1;
-    }
+        data->ply.turn_direction = (-1);
     if (mlx_is_key_down(mlx, MLX_KEY_RIGHT))
+        data->ply.turn_direction = (+1);
+    data->ply.rotation_angle += data->ply.turn_direction * data->ply.rotationSpeed;  
+    movestep = data->ply.walk_direction * data->ply.move_speed;
+    
+    double newx = player->instances->x + round(cos(data->ply.rotation_angle) * movestep);
+    double newy = player->instances->y + round(sin(data->ply.rotation_angle) * movestep);
+    if (!haswall(newx, newy, data))
     {
-        data->ply.turn_direction = +1;
+        player->instances->x = newx;
+        player->instances->y = newy;
     }
-    data->ply.rotation_angle += data->ply.turn_direction * data->ply.rotationSpeed;
-    double movestep = data->ply.walk_direction * data->ply.move_speed;
-    player->instances->x += cos(data->ply.rotation_angle) * movestep;
-    player->instances->y += sin(data->ply.rotation_angle) * movestep;
-    mlx_delete_image(mlx, line);
-    line = mlx_new_image(data->mlx, data->w * CELL, data->h * CELL);
-    mlx_image_to_window(data->mlx, line, 0, 0);
-    draw_line(line, x, y, x + cos(data->ply.rotation_angle) * 30, y + sin(data->ply.rotation_angle) * 30, 0xFF0000FF);
+    mlx_delete_image(mlx, data->line);
+    data->line = mlx_new_image(data->mlx, data->w * CELL, data->h * CELL);
+    mlx_image_to_window(data->mlx, data->line, 0, 0);
+    cast_all_rays(data);
 }
 
 char **get_map(char *file)
@@ -225,8 +341,8 @@ t_ply_info init_ply()
     ply.turn_direction = 0; // -1 if left , +1 id right
     ply.walk_direction = 0; // -1 if back , +1 id front
     ply.rotation_angle = M_PI / 2;
-    ply.move_speed = 3;
-    ply.rotationSpeed = 3 * (M_PI / 180);
+    ply.move_speed = 2.0;
+    ply.rotationSpeed = 2 * (M_PI / 180);
     return (ply);
 }
 
