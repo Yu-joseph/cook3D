@@ -6,7 +6,7 @@
 /*   By: eismail <eismail@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 18:04:11 by eismail           #+#    #+#             */
-/*   Updated: 2025/01/03 11:15:58 by eismail          ###   ########.fr       */
+/*   Updated: 2025/01/05 12:35:53 by eismail          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ static mlx_image_t* player;
 int close_window(int keycode, void *param)
 {
 	(void) param;
-	if (keycode == 53) // 53 is the keycode for the ESC key on macOS
+	if (keycode == 53)
 		exit(0);
 	return (0);
 }
@@ -315,9 +315,14 @@ void rectangle(mlx_image_t *img, double x, double y, double width, double height
 {
 	double i;
 	double j;
-
+	(void) width;
+	(void) height;
+	if (x < 0) x = 0;
+    if (y < 0) y = 0;
+    if (x + width > img->width) width = img->width - x;
+    if (y + height > img->height) height = img->height ;
+	
 	i = x;
-	j = y;
 	while (i < (x + width))
 	{	
 		j = y;
@@ -338,9 +343,6 @@ void reander_walls(t_game *data, double **rays)
 	int i;
 
 	i = 0;
-	// mlx_delete_image(data->mlx, data->game);
-	data->game = mlx_new_image(data->mlx, W, H);
-	mlx_image_to_window(data->mlx, data->game, 0, 0);
 	while (i < NUM_RAYS)
 	{
 		ray = rays[i];
@@ -355,7 +357,6 @@ void cast_all_rays(t_game *data)
 {
 	int colm;
 	double angle;
-	// double *wallhit;
 	double *rays[NUM_RAYS];
 
 	colm = 0;
@@ -363,7 +364,6 @@ void cast_all_rays(t_game *data)
 	while (colm < NUM_RAYS)
 	{
 		norm_engle(data, &angle);
-		// wallhit = cmp_hv(data, data->x, data->y, angle);
 		rays[colm] = cmp_hv(data, data->x, data->y, angle);
 		draw_line(data->line, data->x, data->y, rays[colm][0], rays[colm][1], 0xFF0000FF);
 		colm++;
@@ -377,48 +377,70 @@ void cast_all_rays(t_game *data)
 		colm++;
 	}
 }
+void rebiuld(t_game *data)
+{
+	if (!haswall(data->x, data->y, data) && (mlx_is_key_down(data->mlx, MLX_KEY_S) || mlx_is_key_down(data->mlx, MLX_KEY_D) || mlx_is_key_down(data->mlx, MLX_KEY_A) || mlx_is_key_down(data->mlx, MLX_KEY_UP) || mlx_is_key_down(data->mlx, MLX_KEY_W) || mlx_is_key_down(data->mlx, MLX_KEY_DOWN) || mlx_is_key_down(data->mlx, MLX_KEY_RIGHT) || mlx_is_key_down(data->mlx, MLX_KEY_LEFT)) )
+	{
+		mlx_delete_image(data->mlx, data->game);
+		data->game = mlx_new_image(data->mlx, W, H);
+		mlx_image_to_window(data->mlx, data->game, 0, 0);
+		
+		mlx_delete_image(data->mlx, data->line);
+		data->line = mlx_new_image(data->mlx, data->w * CELL, data->h * CELL);
+		mlx_image_to_window(data->mlx, data->line, 0, 0);
+	}
+}
+
+void ft_move(t_game *data)
+{
+	data->ply.turn_direction = 0;
+	data->ply.side_direction = 0;
+	data->ply.walk_direction = 0;
+	if (mlx_is_key_down(data->mlx, MLX_KEY_ESCAPE))
+		mlx_close_window(data->mlx);
+	if (mlx_is_key_down(data->mlx, MLX_KEY_UP) || mlx_is_key_down(data->mlx, MLX_KEY_W))
+		data->ply.walk_direction = +1;
+	if (mlx_is_key_down(data->mlx, MLX_KEY_DOWN) || mlx_is_key_down(data->mlx, MLX_KEY_S))
+		data->ply.walk_direction = (-1);
+	if (mlx_is_key_down(data->mlx, MLX_KEY_LEFT))
+		data->ply.turn_direction = (-1);
+	if (mlx_is_key_down(data->mlx, MLX_KEY_RIGHT))
+		data->ply.turn_direction = (+1);
+	if (mlx_is_key_down(data->mlx, MLX_KEY_A))
+		data->ply.side_direction = (-1);
+	if (mlx_is_key_down(data->mlx, MLX_KEY_D))
+		data->ply.side_direction = (+1);
+	rebiuld(data);
+	data->ply.rotation_angle += data->ply.turn_direction * data->ply.rotationSpeed;
+	data->ply.side_angle += data->ply.turn_direction * data->ply.rotationSpeed;
+}
 
 void ft_hook(void* param)
 {
 	t_game* data = param;
-	mlx_t * mlx = data->mlx;
+	double newx;
+	double newy;
+	
 	data->x = player->instances->x;
 	data->y = player->instances->y;
-	double movestep;
-	
-	data->ply.turn_direction = 0;
-	data->ply.walk_direction = 0;
-	if (mlx_is_key_down(mlx, MLX_KEY_ESCAPE))
-		mlx_close_window(mlx);
-	if (mlx_is_key_down(mlx, MLX_KEY_UP) || mlx_is_key_down(mlx, MLX_KEY_W))
-		data->ply.walk_direction = +1;
-	if (mlx_is_key_down(mlx, MLX_KEY_DOWN) || mlx_is_key_down(mlx, MLX_KEY_S))
-		data->ply.walk_direction = (-1);
-		
-	
-	if (mlx_is_key_down(mlx, MLX_KEY_A) && !haswall(data->x-1, data->y, data))
-		player->instances->x -= 1; 
-	if (mlx_is_key_down(mlx, MLX_KEY_D)  && !haswall(data->x+1, data->y, data))
-		player->instances->x += 1; 
-		
-	if (mlx_is_key_down(mlx, MLX_KEY_LEFT))
-		data->ply.turn_direction = (-1);
-	if (mlx_is_key_down(mlx, MLX_KEY_RIGHT))
-		data->ply.turn_direction = (+1);
-		
-	data->ply.rotation_angle += data->ply.turn_direction * data->ply.rotationSpeed;  
-	movestep = data->ply.walk_direction * data->ply.move_speed;
-	
-	double newx = player->instances->x + round(cos(data->ply.rotation_angle) * movestep);
-	double newy = player->instances->y + round(sin(data->ply.rotation_angle) * movestep);
+	ft_move(data);
+	data->ply.movestep = data->ply.walk_direction * data->ply.move_speed;
+	if (data->ply.movestep == 0)
+	{
+		data->ply.movestep = data->ply.side_direction * data->ply.move_speed;
+		newx = player->instances->x + round(cos(data->ply.side_angle) * data->ply.movestep);
+		newy = player->instances->y + round(sin(data->ply.side_angle) * data->ply.movestep);
+	}
+	else
+	{
+		newx = player->instances->x + round(cos(data->ply.rotation_angle) * data->ply.movestep);
+		newy = player->instances->y + round(sin(data->ply.rotation_angle) * data->ply.movestep);	
+	}
 	if (!phaswall(newx, newy, data))
 	{
 		player->instances->x = newx;
 		player->instances->y = newy;
 	}
-	mlx_delete_image(mlx, data->line);
-	data->line = mlx_new_image(data->mlx, data->w * CELL, data->h * CELL);
-	mlx_image_to_window(data->mlx, data->line, 0, 0);
 	cast_all_rays(data);
 }
 
@@ -446,11 +468,13 @@ char **get_map(char *file)
 t_ply_info init_ply()
 {
 	t_ply_info ply;
-	ply.turn_direction = 0; // -1 if left , +1 id right
-	ply.walk_direction = 0; // -1 if back , +1 id front
+	ply.turn_direction = 0; // -1 if left , +1 if right
+	ply.walk_direction = 0; // -1 if back , +1 if front
 	ply.rotation_angle = M_PI / 2;
+	ply.side_angle = ply.rotation_angle + (90 * (M_PI / 180));
 	ply.move_speed = 2.0;
 	ply.rotationSpeed = 2 * (M_PI / 180);
+	ply.movestep = 0;
 	return (ply);
 }
 
