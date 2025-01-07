@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_lstsize_bonus.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adbouras <adbouras@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: eismail <eismail@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/12/22 18:00:46 by adbouras          #+#    #+#             */
-/*   Updated: 2023/12/22 18:25:38 by adbouras         ###   ########.fr       */
+/*   Created: 2023/12/20 22:37:18 by eismail           #+#    #+#             */
+/*   Updated: 2023/12/22 22:08:43 by eismail          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,13 @@
 
 int	ft_lstsize(t_list *lst)
 {
-	int	count;
+	int	i;
 
-	count = 0;
+	i = 0;
 	while (lst != NULL)
 	{
-		count++;
+		i++;
 		lst = lst->next;
 	}
-	return (count);
+	return (i);
 }

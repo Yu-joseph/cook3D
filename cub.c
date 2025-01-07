@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   cub.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eismail <eismail@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ysouhail <ysouhail@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 18:04:11 by eismail           #+#    #+#             */
-/*   Updated: 2025/01/05 12:35:53 by eismail          ###   ########.fr       */
+/*   Updated: 2025/01/07 11:30:16 by ysouhail         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft/libft.h"
 #include <stdio.h>
-#include "cub.h"
+#include "cub3D.h"
 
 static mlx_image_t* wall;
 static mlx_image_t* player;
@@ -99,7 +99,7 @@ void desplay_map(t_game *data)
 			{
 				mlx_image_to_window(data->mlx, wall, x, y);
 			}
-			if (data->map[i][j] == 'P')
+			if (data->map[i][j] == 'S')
 			{
 				mlx_image_to_window(data->mlx, player, x, y);
 				data->x = j;
@@ -478,22 +478,22 @@ t_ply_info init_ply()
 	return (ply);
 }
 
-int main(int ac, char **av)
-{
-	(void) ac;
-	t_game game;
+// int main(int ac, char **av)
+// {
+// 	(void) ac;
+// 	t_game game;
 	
-	game.ply = init_ply();
-	game.map = get_map(av[1]);
-	desplay_map(&game);
-	mlx_loop_hook(game.mlx, ft_hook, &game);
-	mlx_loop(game.mlx);
-	int i = 0;
-	while (game.map[i])
-	{
-		free(game.map[i]);
-		i++;
-	}
-	free(game.map);
-	return (0);
-}
+// 	game.ply = init_ply();
+// 	game.map = get_map(av[1]);
+// 	desplay_map(&game);
+// 	mlx_loop_hook(game.mlx, ft_hook, &game);
+// 	mlx_loop(game.mlx);
+// 	int i = 0;
+// 	while (game.map[i])
+// 	{
+// 		free(game.map[i]);
+// 		i++;
+// 	}
+// 	free(game.map);
+// 	return (0);
+// }

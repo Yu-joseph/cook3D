@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_lstiter_bonus.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adbouras <adbouras@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: eismail <eismail@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/12/24 16:00:16 by adbouras          #+#    #+#             */
-/*   Updated: 2023/12/24 16:15:13 by adbouras         ###   ########.fr       */
+/*   Created: 2023/12/22 08:28:54 by eismail           #+#    #+#             */
+/*   Updated: 2023/12/23 10:09:44 by eismail          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,14 @@
 
 void	ft_lstiter(t_list *lst, void (*f)(void *))
 {
-	while (lst != NULL)
+	t_list	*temp;
+
+	if (!lst || !f)
+		return ;
+	temp = lst;
+	while (temp)
 	{
-		f(lst->content);
-		lst = lst->next;
+		f(temp->content);
+		temp = temp->next;
 	}
 }

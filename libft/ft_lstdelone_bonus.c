@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_lstdelone_bonus.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adbouras <adbouras@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: eismail <eismail@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/12/23 11:42:07 by adbouras          #+#    #+#             */
-/*   Updated: 2023/12/23 11:53:33 by adbouras         ###   ########.fr       */
+/*   Created: 2023/12/21 12:41:43 by eismail           #+#    #+#             */
+/*   Updated: 2023/12/23 11:12:16 by eismail          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 void	ft_lstdelone(t_list *lst, void (*del)(void *))
 {
-	del(lst->content);
-	free(lst);
+	if (!lst || !del)
+		return ;
+	del (lst->content);
+	free (lst);
 }

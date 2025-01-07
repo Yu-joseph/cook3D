@@ -4,13 +4,13 @@ CFLAGS = -Wall -Wextra -Werror -g -fsanitize=address
 
 LIB = libft/libft.a
 
-SRC = cub.c gnl/get_next_line.c  gnl/get_next_line_utils.c
+SRC = cub.c get/get_next_line.c  get/get_next_line_utils.c main.c map_y.c y_utils.c 
 
 OBJ = $(SRC:.c=.o)
 
 NAME = cub3D
 
-HDR = cub.h
+HDR = cub3D.h
 
 MLX_LIB_PATH = MLX/build/libmlx42.a
 GLFW_LIB_PATH = $(shell brew --prefix glfw)/lib

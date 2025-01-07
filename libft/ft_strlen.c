@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: eismail <eismail@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/12/04 22:13:35 by adbouras          #+#    #+#             */
-/*   Updated: 2024/08/28 18:03:21 by eismail          ###   ########.fr       */
+/*   Created: 2023/12/05 12:25:43 by eismail           #+#    #+#             */
+/*   Updated: 2023/12/20 17:29:31 by eismail          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,7 @@ size_t	ft_strlen(const char *s)
 	size_t	i;
 
 	i = 0;
-	if (!s)
-		return (0);
-	while (s[i] != '\0')
+	while (s[i])
 		i++;
 	return (i);
 }

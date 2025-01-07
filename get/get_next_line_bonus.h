@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.h                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eismail <eismail@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ysouhail <ysouhail@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/01/09 11:14:13 by eismail           #+#    #+#             */
-/*   Updated: 2024/01/18 10:48:01 by eismail          ###   ########.fr       */
+/*   Created: 2024/02/24 14:06:54 by ysouhail          #+#    #+#             */
+/*   Updated: 2025/01/07 10:20:00 by ysouhail         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
+#ifndef GET_NEXT_LINE_BONUS_H
+# define GET_NEXT_LINE_BONUS_H
 
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 1
@@ -19,13 +19,12 @@
 
 # include <unistd.h>
 # include <stdlib.h>
+# include <limits.h>
+# include "../libft/libft.h"
 
 char	*get_next_line(int fd);
-size_t	ft_strlen(const char *s);
-char	*sub_buf(char *s, size_t start, size_t end);
-char	*add_buffer(char *s1, char *s2);
-int		find_line(char *s);
-char	*re_line(char **s);
-char	*ft_free(char *cup_buffer, char **s);
-
+size_t	ft_strlen(char *s);
+char	*ft_strjwan(char *s, char *p);
+char	*ft_strchr(char *s, char c);
+char	*str_jwan(char *s, char *p);
 #endif
