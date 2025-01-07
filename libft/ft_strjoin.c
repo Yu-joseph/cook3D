@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strjoin.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adbouras <adbouras@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: eismail <eismail@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/12/13 09:34:14 by adbouras          #+#    #+#             */
-/*   Updated: 2024/08/14 19:32:31 by adbouras         ###   ########.fr       */
+/*   Created: 2023/12/14 19:45:01 by eismail           #+#    #+#             */
+/*   Updated: 2023/12/23 16:48:31 by eismail          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,8 @@
 
 char	*ft_strjoin(char const *s1, char const *s2)
 {
-	char	*s3;
-	int		s1_len;
-	int		s2_len;
+	char	*new_str;
+	size_t	size_to_allocate;
 
 	if (!s1 && !s2)
 		return (NULL);
@@ -24,12 +23,11 @@ char	*ft_strjoin(char const *s1, char const *s2)
 		return (ft_strdup(s2));
 	if (!s2)
 		return (ft_strdup(s1));
-	s1_len = ft_strlen(s1);
-	s2_len = ft_strlen(s2);
-	s3 = malloc((s1_len + s2_len) * sizeof(char) + 1);
-	if (s3 == 0)
+	size_to_allocate = ft_strlen(s1) + ft_strlen(s2);
+	new_str = malloc(sizeof(char) * (size_to_allocate + 1));
+	if (new_str == NULL)
 		return (NULL);
-	ft_strlcpy(s3, s1, s1_len + 1);
-	ft_strlcat(s3, s2, s1_len + s2_len + 1);
-	return (s3);
+	ft_strlcpy(new_str, s1, ft_strlen(s1) + 1);
+	ft_strlcat(new_str, s2, size_to_allocate + 1);
+	return (new_str);
 }

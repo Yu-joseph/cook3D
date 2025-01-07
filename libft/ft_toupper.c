@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_toupper.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adbouras <adbouras@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: eismail <eismail@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/12/08 16:46:45 by adbouras          #+#    #+#             */
-/*   Updated: 2023/12/30 13:38:47 by adbouras         ###   ########.fr       */
+/*   Created: 2023/12/08 16:46:39 by eismail           #+#    #+#             */
+/*   Updated: 2023/12/20 17:35:36 by eismail          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,9 @@
 
 int	ft_toupper(int c)
 {
-	if (c >= 'a' && c <= 'z')
-		c = c - 32;
+	if ((c >= 'a') && (c <= 'z'))
+	{
+		return (c - 32);
+	}
 	return (c);
 }

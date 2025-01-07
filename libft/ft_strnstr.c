@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strnstr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adbouras <adbouras@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: eismail <eismail@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/12/09 16:09:57 by adbouras          #+#    #+#             */
-/*   Updated: 2023/12/20 11:46:57 by adbouras         ###   ########.fr       */
+/*   Created: 2023/12/11 10:25:37 by eismail           #+#    #+#             */
+/*   Updated: 2023/12/20 17:32:15 by eismail          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,23 +14,24 @@
 
 char	*ft_strnstr(const char *haystack, const char *needle, size_t len)
 {
-	size_t	n;
-	size_t	h;
+	size_t	j;
+	size_t	i;
 
-	n = 0;
-	h = 0;
-	if (needle[n] == '\0')
+	i = 0;
+	j = 0;
+	if (!*needle)
 		return ((char *)haystack);
-	while (haystack[h] != '\0')
+	while ((i < len) && (haystack[i] != '\0'))
 	{
-		while ((haystack[h + n] == needle[n]) && (n + h < len))
+		j = 0;
+		while ((i + j < len) && (needle[j] != '\0')
+			&& (haystack[i + j] == needle[j]))
 		{
-			if (needle[n + 1] == '\0')
-				return ((char *)&haystack[h]);
-			n++;
+			if (needle[j + 1] == '\0')
+				return ((char *)haystack + i);
+			j++;
 		}
-		n = 0;
-		h++;
+		i++;
 	}
 	return (NULL);
 }

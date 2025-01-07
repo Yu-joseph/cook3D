@@ -3,38 +3,57 @@
 /*                                                        :::      ::::::::   */
 /*   ft_atoi.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eismail <eismail@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ysouhail <ysouhail@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/12/09 18:58:03 by adbouras          #+#    #+#             */
-/*   Updated: 2024/09/07 15:30:51 by eismail          ###   ########.fr       */
+/*   Created: 2023/12/11 16:03:51 by eismail           #+#    #+#             */
+/*   Updated: 2025/01/07 10:11:11 by ysouhail         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-long long int	ft_atoi(const char *str)
+void	check_pls(const char *str)
 {
-	int				i;
-	int				sign;
-	long long int	result;
-
-	i = 0;
-	sign = 1;
-	result = 0;
-	while ((str[i] >= 9 && str[i] <= 13) || (str[i] == 32))
+	int i = 0;
+	while (str[i])
 	{
+		if (str[i] == '\0' || ((str[i] == '-'|| str[i] == '+') && str[i+1] == '\0'))
+			exit(write(2, "ERROR\nONLY SPACE\n", 17));
+		else if (!(str[i] >= '0' && str[i] <= '9') && str[i] != '+' && str[i] != '-' && str[i] != ' ')
+			exit(write(2, "ERROR\nbad numb\n", 16));
+		else if ((str[i] == '-' || str[i] == '+') && str[i+1] == ' ')
+			exit(write(2, "ERROR\nbad sperator\n", 19));
+		else if(ft_isdigit(str[i]) && (str[i+1] == '-' || str[i+1] == '+'))
+			exit(write(2, "ERROR\nbad nb\n", 13));
 		i++;
 	}
+	
+}
+
+int	ft_atoi(const char *str)
+{
+	int	i;
+	int	neg_flg;
+	int	res;
+
+	i = 0;
+	neg_flg = 1;
+	res = 0;
+	while ((str[i] == ' ') || ((str[i] >= 9) && (str[i] <= 13)))
+		i++;
+	check_pls(&str[i]);
 	if (str[i] == '-' || str[i] == '+')
 	{
 		if (str[i] == '-')
-			sign = -1;
+			neg_flg *= -1;
 		i++;
 	}
-	while (str[i] >= '0' && str[i] <= '9')
+	if (str[i] == '-' || str[i] == '+')
+		exit(write(2, "ERROR\nplus+-\n", 13));
+	while ((str[i] >= '0') && (str[i] <= '9'))
 	{
-		result = (result * 10) + (str[i] - '0');
+		res = (res * 10) + (str[i] - '0');
 		i++;
 	}
-	return (result * sign);
+	return (res * neg_flg);
 }

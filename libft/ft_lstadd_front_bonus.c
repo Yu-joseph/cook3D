@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstadd_front_bonus.c                            :+:      :+:    :+:   */
+/*   ft_lstadd_front.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adbouras <adbouras@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: eismail <eismail@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/12/21 22:54:52 by adbouras          #+#    #+#             */
-/*   Updated: 2023/12/30 17:51:04 by adbouras         ###   ########.fr       */
+/*   Created: 2023/12/20 19:53:09 by eismail           #+#    #+#             */
+/*   Updated: 2023/12/20 20:41:29 by eismail          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,9 @@
 
 void	ft_lstadd_front(t_list **lst, t_list *new)
 {
-	if (lst == NULL)
-		return ;
-	if (*lst == NULL)
+	if (lst && new)
 	{
+		new->next = *lst;
 		*lst = new;
-		return ;
 	}
-	new->next = *lst;
-	*lst = new;
 }
