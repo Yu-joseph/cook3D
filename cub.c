@@ -6,7 +6,7 @@
 /*   By: eismail <eismail@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 18:04:11 by eismail           #+#    #+#             */
-/*   Updated: 2025/01/08 11:21:39 by eismail          ###   ########.fr       */
+/*   Updated: 2025/01/08 12:54:15 by eismail          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,33 +63,26 @@ void pint(mlx_image_t *img, int h, int w, int color)
 		i++;
 	}
 }
-
-void desplay_map(t_game *data)
+void chose_angle(t_game *data, char p)
 {
-	int h;
-	int w;
+	if (p == 'S')
+		data->ply.rotation_angle = M_PI / 2;
+	if (p == 'N')
+		data->ply.rotation_angle = 3 * (M_PI / 2);
+	if (p == 'W')
+		data->ply.rotation_angle = M_PI;
+	if (p == 'E')
+		data->ply.rotation_angle = 0;
+}
+void rander_minimap(t_game *data, bool p)
+{
 	int i;
 	int j;
-	
-	h = ft_height(data->map) * CELL;
-	w = ft_wedth(data->map) * CELL;
-	data->h = ft_height(data->map);
-	data->w = ft_wedth(data->map);
-	// printf("w = %d h = %d\n",data->w,data->h);
-	data->mlx = mlx_init(W, H, "cub", true);
-	data->wall = mlx_new_image(data->mlx, 30, 30);
-	data->player = mlx_new_image(data->mlx, PLAYER, PLAYER);
-	pint(data->player, PLAYER, PLAYER, 0xFF0000FF);
-	pint(data->wall, 30, 30, 0xFFFFFFFF);
-	data->line = mlx_new_image(data->mlx, w, h);
-	mlx_image_to_window(data->mlx, data->line, 0, 0);
-	data->game = mlx_new_image(data->mlx, W, H);
-	mlx_image_to_window(data->mlx, data->game, 0, 0);
-
-	i = 0;
-	j = 0;
 	int x;
 	int y;
+	
+	i = 0;
+	j = 0;
 	while(data->map[i])
 	{
 		for (j = 0; data->map[i][j]; j++)
@@ -100,15 +93,36 @@ void desplay_map(t_game *data)
 			{
 				mlx_image_to_window(data->mlx, data->wall, x, y);
 			}
-			if (data->map[i][j] == 'S')
+			if ((data->map[i][j] == 'S' || data->map[i][j] == 'W' 
+				|| data->map[i][j] == 'N' || data->map[i][j] == 'E') && p)
 			{
+				chose_angle(data, data->map[i][j]);
 				mlx_image_to_window(data->mlx, data->player, x, y);
-				data->x = j;
-				data->y = i;
 			}
 		}
 		i++;
 	}
+}
+	
+void ft_mlx_init(t_game *data)
+{
+	int h;
+	int w;
+	
+	h = ft_height(data->map) * CELL;
+	w = ft_wedth(data->map) * CELL;
+	data->h = ft_height(data->map);
+	data->w = ft_wedth(data->map);
+	data->mlx = mlx_init(W, H, "cub", true);
+	data->wall = mlx_new_image(data->mlx, 30, 30);
+	data->player = mlx_new_image(data->mlx, PLAYER, PLAYER);
+	pint(data->player, PLAYER, PLAYER, 0xFF0000FF);
+	pint(data->wall, 30, 30, 0xFFFFFFFF);
+	data->line = mlx_new_image(data->mlx, w, h);
+	mlx_image_to_window(data->mlx, data->line, 0, 0);
+	data->game = mlx_new_image(data->mlx, W, H);
+	mlx_image_to_window(data->mlx, data->game, 0, 0);
+	rander_minimap(data, true);
 }
 
 void draw_line(mlx_image_t *mlx, int x0, int y0, int x1, int y1, int color)
@@ -331,7 +345,7 @@ void rectangle(mlx_image_t *img, double x, double y, double width, double height
 		j = y;
 		while (j < (y + height))
 		{
-			mlx_put_pixel(img, i, j, 0x00FFFFFF);
+			mlx_put_pixel(img, i, j, 0x4a747dFF);
 			j++;
 		}
 		i++;
@@ -343,17 +357,20 @@ void reander_walls(t_game *data, double **rays)
 	double dis;
 	double dis_plane;
 	double wall_height;
+	double angle;
 	int i;
 
 	i = 0;
+	angle = data->ply.rotation_angle - (FOV_ANGLE / 2);
 	while (i < NUM_RAYS)
 	{
 		ray = rays[i];
-		dis = distance(data->x, data->y, ray[0], ray[1]);
+		dis = distance(data->x, data->y, ray[0], ray[1]) * cos(angle - data->ply.rotation_angle);
 		dis_plane = (W / 2) / tan(FOV_ANGLE / 2);
 		wall_height = (CELL / dis) * dis_plane;
 		rectangle(data->game, i * WALL_STRIP_WIDTH, (H / 2) - (wall_height/ 2), WALL_STRIP_WIDTH, wall_height);
 		i++;
+		angle += FOV_ANGLE / NUM_RAYS;
 	}
 }
 void cast_all_rays(t_game *data)
@@ -382,7 +399,11 @@ void cast_all_rays(t_game *data)
 }
 void rebiuld(t_game *data)
 {
-	if (!haswall(data->x, data->y, data) && (mlx_is_key_down(data->mlx, MLX_KEY_S) || mlx_is_key_down(data->mlx, MLX_KEY_D) || mlx_is_key_down(data->mlx, MLX_KEY_A) || mlx_is_key_down(data->mlx, MLX_KEY_UP) || mlx_is_key_down(data->mlx, MLX_KEY_W) || mlx_is_key_down(data->mlx, MLX_KEY_DOWN) || mlx_is_key_down(data->mlx, MLX_KEY_RIGHT) || mlx_is_key_down(data->mlx, MLX_KEY_LEFT)) )
+	if (!haswall(data->x, data->y, data) && (mlx_is_key_down(data->mlx, MLX_KEY_S) 
+		|| mlx_is_key_down(data->mlx, MLX_KEY_D) || mlx_is_key_down(data->mlx, MLX_KEY_A) 
+		|| mlx_is_key_down(data->mlx, MLX_KEY_UP) || mlx_is_key_down(data->mlx, MLX_KEY_W) 
+		|| mlx_is_key_down(data->mlx, MLX_KEY_DOWN) || mlx_is_key_down(data->mlx, MLX_KEY_RIGHT) 
+		|| mlx_is_key_down(data->mlx, MLX_KEY_LEFT)) )
 	{
 		mlx_delete_image(data->mlx, data->game);
 		data->game = mlx_new_image(data->mlx, W, H);
@@ -391,6 +412,10 @@ void rebiuld(t_game *data)
 		mlx_delete_image(data->mlx, data->line);
 		data->line = mlx_new_image(data->mlx, data->w * CELL, data->h * CELL);
 		mlx_image_to_window(data->mlx, data->line, 0, 0);
+		
+		mlx_delete_image(data->mlx, data->wall);
+		data->wall = mlx_new_image(data->mlx, CELL, CELL);
+		pint(data->wall, CELL, CELL, 0xFFFFFFFF);
 	}
 }
 
@@ -414,6 +439,7 @@ void ft_move(t_game *data)
 	if (mlx_is_key_down(data->mlx, MLX_KEY_D))
 		data->ply.side_direction = (+1);
 	rebiuld(data);
+	rander_minimap(data, false);
 	data->ply.rotation_angle += data->ply.turn_direction * data->ply.rotationSpeed;
 	data->ply.side_angle += data->ply.turn_direction * data->ply.rotationSpeed;
 }
@@ -473,7 +499,7 @@ t_ply_info init_ply()
 	t_ply_info ply;
 	ply.turn_direction = 0; // -1 if left , +1 if right
 	ply.walk_direction = 0; // -1 if back , +1 if front
-	ply.rotation_angle = M_PI / 2;
+	ply.rotation_angle = 0;
 	ply.side_angle = ply.rotation_angle + (90 * (M_PI / 180));
 	ply.move_speed = 2.0;
 	ply.rotationSpeed = 2 * (M_PI / 180);
@@ -481,22 +507,3 @@ t_ply_info init_ply()
 	return (ply);
 }
 
-// int main(int ac, char **av)
-// {
-// 	(void) ac;
-// 	t_game game;
-	
-// 	game.ply = init_ply();
-// 	game.map = get_map(av[1]);
-// 	desplay_map(&game);
-// 	mlx_loop_hook(game.mlx, ft_hook, &game);
-// 	mlx_loop(game.mlx);
-// 	int i = 0;
-// 	while (game.map[i])
-// 	{
-// 		free(game.map[i]);
-// 		i++;
-// 	}
-// 	free(game.map);
-// 	return (0);
-// }

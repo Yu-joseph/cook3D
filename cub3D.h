@@ -108,7 +108,7 @@ double distance(double x0, double y0, double x1,double y1);
 bool haswall(double x, double y, t_game *data);
 bool phaswall(double x, double y, t_game *data);
 void draw_line(mlx_image_t *mlx, int x0, int y0, int x1, int y1, int color);
-void desplay_map(t_game *data);
+void ft_mlx_init(t_game *data);
 void pint(mlx_image_t *img, int h, int w, int color);
 int	ft_wedth(char **s);
 int	ft_height(char **s);
