@@ -6,7 +6,7 @@
 /*   By: eismail <eismail@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 18:04:11 by eismail           #+#    #+#             */
-/*   Updated: 2025/01/08 12:54:15 by eismail          ###   ########.fr       */
+/*   Updated: 2025/01/08 13:09:28 by eismail          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,7 @@ void chose_angle(t_game *data, char p)
 		data->ply.rotation_angle = M_PI;
 	if (p == 'E')
 		data->ply.rotation_angle = 0;
+	data->ply.side_angle = data->ply.rotation_angle + (M_PI /2);
 }
 void rander_minimap(t_game *data, bool p)
 {
@@ -500,7 +501,7 @@ t_ply_info init_ply()
 	ply.turn_direction = 0; // -1 if left , +1 if right
 	ply.walk_direction = 0; // -1 if back , +1 if front
 	ply.rotation_angle = 0;
-	ply.side_angle = ply.rotation_angle + (90 * (M_PI / 180));
+	ply.side_angle = 0;
 	ply.move_speed = 2.0;
 	ply.rotationSpeed = 2 * (M_PI / 180);
 	ply.movestep = 0;

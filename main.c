@@ -6,7 +6,7 @@
 /*   By: eismail <eismail@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 12:01:10 by ysouhail          #+#    #+#             */
-/*   Updated: 2025/01/08 12:32:09 by eismail          ###   ########.fr       */
+/*   Updated: 2025/01/08 13:06:26 by eismail          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,21 +23,11 @@ int	main(int ac, char **av)
 		return (1);
 	// game.map = check_map(av[1], &game);
 	parse_map(check_map(av[1], &game), &game);
-	// game.map = &av[i+1];
 	game.ply = init_ply();
-	// game.map = get_map(av[1]);
 	ft_mlx_init(&game);
-	int i = 0;
-	// while (game.map[i])
-	// {
-	// 	printf("%s\n",game.map[i]);
-	// 	free(game.map[i]);
-	// 	i++;
-	// }
-	// exit(0);
 	mlx_loop_hook(game.mlx, ft_hook, &game);
 	mlx_loop(game.mlx);
-	 i = 0;
+	int i = 0;
 	while (game.map[i])
 	{
 		// printf("%s\n",game.map[i]);
