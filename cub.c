@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ysouhail <ysouhail@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: eismail <eismail@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 18:04:11 by eismail           #+#    #+#             */
-/*   Updated: 2025/01/07 11:30:16 by ysouhail         ###   ########.fr       */
+/*   Updated: 2025/01/08 11:21:39 by eismail          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 #include <stdio.h>
 #include "cub3D.h"
 
-static mlx_image_t* wall;
-static mlx_image_t* player;
+// static mlx_image_t* wall;
+// static mlx_image_t* player;
 // static mlx_image_t *line;
 
 int close_window(int keycode, void *param)
@@ -75,11 +75,12 @@ void desplay_map(t_game *data)
 	w = ft_wedth(data->map) * CELL;
 	data->h = ft_height(data->map);
 	data->w = ft_wedth(data->map);
+	// printf("w = %d h = %d\n",data->w,data->h);
 	data->mlx = mlx_init(W, H, "cub", true);
-	wall = mlx_new_image(data->mlx, 30, 30);
-	player = mlx_new_image(data->mlx, PLAYER, PLAYER);
-	pint(player, PLAYER, PLAYER, 0xFF0000FF);
-	pint(wall, 30, 30, 0xFFFFFFFF);
+	data->wall = mlx_new_image(data->mlx, 30, 30);
+	data->player = mlx_new_image(data->mlx, PLAYER, PLAYER);
+	pint(data->player, PLAYER, PLAYER, 0xFF0000FF);
+	pint(data->wall, 30, 30, 0xFFFFFFFF);
 	data->line = mlx_new_image(data->mlx, w, h);
 	mlx_image_to_window(data->mlx, data->line, 0, 0);
 	data->game = mlx_new_image(data->mlx, W, H);
@@ -97,11 +98,11 @@ void desplay_map(t_game *data)
 			y = i * CELL;
 			if (data->map[i][j] == '1')
 			{
-				mlx_image_to_window(data->mlx, wall, x, y);
+				mlx_image_to_window(data->mlx, data->wall, x, y);
 			}
 			if (data->map[i][j] == 'S')
 			{
-				mlx_image_to_window(data->mlx, player, x, y);
+				mlx_image_to_window(data->mlx, data->player, x, y);
 				data->x = j;
 				data->y = i;
 			}
@@ -168,6 +169,8 @@ bool haswall(double x, double y, t_game *data)
 	cell_x = floor(x / CELL);
 	cell_y = floor(y / CELL);
 	if (x < 0 || x >= (data->w * CELL) || y < 0 || y >= (data->h * CELL))
+		return (true);
+	if ((unsigned long)(cell_x) >= ft_strlen(data->map[cell_y]) )
 		return (true);
 	if (data->map[cell_y][cell_x] == '1')
 		return (true);
@@ -421,25 +424,25 @@ void ft_hook(void* param)
 	double newx;
 	double newy;
 	
-	data->x = player->instances->x;
-	data->y = player->instances->y;
+	data->x = data->player->instances->x;
+	data->y = data->player->instances->y;
 	ft_move(data);
 	data->ply.movestep = data->ply.walk_direction * data->ply.move_speed;
 	if (data->ply.movestep == 0)
 	{
 		data->ply.movestep = data->ply.side_direction * data->ply.move_speed;
-		newx = player->instances->x + round(cos(data->ply.side_angle) * data->ply.movestep);
-		newy = player->instances->y + round(sin(data->ply.side_angle) * data->ply.movestep);
+		newx = data->player->instances->x + round(cos(data->ply.side_angle) * data->ply.movestep);
+		newy = data->player->instances->y + round(sin(data->ply.side_angle) * data->ply.movestep);
 	}
 	else
 	{
-		newx = player->instances->x + round(cos(data->ply.rotation_angle) * data->ply.movestep);
-		newy = player->instances->y + round(sin(data->ply.rotation_angle) * data->ply.movestep);	
+		newx = data->player->instances->x + round(cos(data->ply.rotation_angle) * data->ply.movestep);
+		newy = data->player->instances->y + round(sin(data->ply.rotation_angle) * data->ply.movestep);	
 	}
 	if (!phaswall(newx, newy, data))
 	{
-		player->instances->x = newx;
-		player->instances->y = newy;
+		data->player->instances->x = newx;
+		data->player->instances->y = newy;
 	}
 	cast_all_rays(data);
 }

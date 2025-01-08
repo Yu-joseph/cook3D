@@ -28,11 +28,11 @@
 
 # define CELL 30
 # define PLAYER 5
-# define W 1800
+# define W 2500
 # define H 1300
 # define FOV_ANGLE 60 * (M_PI / 180)
-# define WALL_STRIP_WIDTH 4
-# define NUM_RAYS 800
+# define WALL_STRIP_WIDTH 1
+# define NUM_RAYS 2500
 
 
 typedef struct s_util

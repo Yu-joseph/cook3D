@@ -20,18 +20,21 @@ GLFW_LIB = -L$(GLFW_LIB_PATH) -lglfw
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	$(MAKE) -C libft
-	$(CC) $(CFLAGS) $(OBJ) $(LIB)  $(MLX_LIB_PATH) $(GLFW_LIB) -framework OpenGL -framework AppKit -o $(NAME)
+	@make -C libft
+	@$(CC) $(CFLAGS) $(OBJ) $(LIB)  $(MLX_LIB_PATH) $(GLFW_LIB) -framework OpenGL -framework AppKit -o $(NAME)
+	@echo "Done"
 
 %.o: %.c $(HDR)
-	$(CC) $(CFLAGS) -c $< -o $@
+	@$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	$(MAKE) -C libft clean
-	rm -f $(OBJ)
+	make -C libft clean
+	@rm -f $(OBJ)
+	@echo "cleaned"
 
 fclean: clean
-	$(MAKE) -C libft fclean
-	rm -f $(NAME)
+	make -C libft fclean
+	@rm -f $(NAME)
+	@echo "fcleaned"
 
 re: fclean all

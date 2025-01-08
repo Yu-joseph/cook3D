@@ -23,16 +23,19 @@ HEADER := libft.h
 all: $(NAME) 
 
 $(NAME): $(OBJS) $(HEADER)
-	ar rcs $(NAME) $(OBJS)
+	@ar rcs $(NAME) $(OBJS)
 
 bonus: $(BONUSOBJS) $(HEADER)
-	ar rcs $(NAME) $(BONUSOBJS)
+	@ar rcs $(NAME) $(BONUSOBJS)
+
+%.o: %.c $(HDR)
+	@$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -fr $(OBJS) $(BONUSOBJS)
+	@rm -fr $(OBJS) $(BONUSOBJS)
 
 fclean: clean
-	rm -fr $(NAME)
+	@rm -fr $(NAME)
 
 re: fclean all bonus
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ysouhail <ysouhail@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: eismail <eismail@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 12:01:10 by ysouhail          #+#    #+#             */
-/*   Updated: 2025/01/07 12:10:51 by ysouhail         ###   ########.fr       */
+/*   Updated: 2025/01/08 11:08:52 by eismail          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,12 +27,20 @@ int	main(int ac, char **av)
 	game.ply = init_ply();
 	// game.map = get_map(av[1]);
 	desplay_map(&game);
+	int i = 0;
+	// while (game.map[i])
+	// {
+	// 	printf("%s\n",game.map[i]);
+	// 	free(game.map[i]);
+	// 	i++;
+	// }
+	// exit(0);
 	mlx_loop_hook(game.mlx, ft_hook, &game);
 	mlx_loop(game.mlx);
-	int i = 0;
+	 i = 0;
 	while (game.map[i])
 	{
-		printf("%s\n",game.map[i]);
+		// printf("%s\n",game.map[i]);
 		free(game.map[i]);
 		i++;
 	}
