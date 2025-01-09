@@ -30,6 +30,8 @@
 # define PLAYER 5
 # define W 2500
 # define H 1300
+# define MINI_W 320
+# define MINI_H 200
 # define FOV_ANGLE 60 * (M_PI / 180)
 # define WALL_STRIP_WIDTH 1
 # define NUM_RAYS 2500
@@ -77,6 +79,7 @@ typedef struct s_game
     double y;
     int w;
     int h;
+    int color;
     bool down;
     bool up   ; 
     bool right ;
@@ -91,6 +94,8 @@ typedef struct s_game
     t_ply_info ply;
 }t_game;
 /*************************/
+int rgb(int r, int g, int b, int a);
+void pint_bg(mlx_image_t *img, double x, double y);
 t_ply_info init_ply();
 char **get_map(char *file);
 void ft_hook(void* param);
@@ -98,7 +103,7 @@ void ft_move(t_game *data);
 void rebiuld(t_game *data);
 void cast_all_rays(t_game *data);
 void reander_walls(t_game *data, double **rays);
-void rectangle(mlx_image_t *img, double x, double y, double width, double height);
+void rectangle(t_game *data, double x, double y, double width, double height);
 double *cmp_hv(t_game *data, double startx,double starty, double angle);
 double *get_distance(t_game *data, double *horwallhit, double *verwallhit);
 void norm_engle(t_game *data, double *angle);

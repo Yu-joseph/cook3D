@@ -6,7 +6,7 @@
 /*   By: eismail <eismail@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 18:04:11 by eismail           #+#    #+#             */
-/*   Updated: 2025/01/08 13:09:28 by eismail          ###   ########.fr       */
+/*   Updated: 2025/01/09 14:50:10 by eismail          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,23 +83,22 @@ void rander_minimap(t_game *data, bool p)
 	int y;
 	
 	i = 0;
-	j = 0;
 	while(data->map[i])
 	{
-		for (j = 0; data->map[i][j]; j++)
+		j = 0;
+		while(data->map[i][j])
 		{
 			x = j * CELL;
 			y = i * CELL;
-			if (data->map[i][j] == '1')
-			{
+			if (data->map[i][j] && data->map[i][j] == '1')
 				mlx_image_to_window(data->mlx, data->wall, x, y);
-			}
-			if ((data->map[i][j] == 'S' || data->map[i][j] == 'W' 
+			if (data->map[i][j] && (data->map[i][j] == 'S' || data->map[i][j] == 'W' 
 				|| data->map[i][j] == 'N' || data->map[i][j] == 'E') && p)
 			{
 				chose_angle(data, data->map[i][j]);
 				mlx_image_to_window(data->mlx, data->player, x, y);
 			}
+			j++;
 		}
 		i++;
 	}
@@ -109,20 +108,27 @@ void ft_mlx_init(t_game *data)
 {
 	int h;
 	int w;
+	mlx_image_t *bg;
 	
 	h = ft_height(data->map) * CELL;
 	w = ft_wedth(data->map) * CELL;
 	data->h = ft_height(data->map);
 	data->w = ft_wedth(data->map);
 	data->mlx = mlx_init(W, H, "cub", true);
-	data->wall = mlx_new_image(data->mlx, 30, 30);
 	data->player = mlx_new_image(data->mlx, PLAYER, PLAYER);
+	bg = mlx_new_image(data->mlx, W, H);
+	mlx_image_to_window(data->mlx, bg, 0, 0);
+	pint_bg(bg, 0, 0);
+	
 	pint(data->player, PLAYER, PLAYER, 0xFF0000FF);
-	pint(data->wall, 30, 30, 0xFFFFFFFF);
-	data->line = mlx_new_image(data->mlx, w, h);
-	mlx_image_to_window(data->mlx, data->line, 0, 0);
 	data->game = mlx_new_image(data->mlx, W, H);
 	mlx_image_to_window(data->mlx, data->game, 0, 0);
+	
+	data->line = mlx_new_image(data->mlx, w, h);
+	mlx_image_to_window(data->mlx, data->line, 0, 0);
+	
+	data->wall = mlx_new_image(data->mlx, CELL, CELL);
+	pint(data->wall, CELL, CELL, 0xFFFFFFFF);
 	rander_minimap(data, true);
 }
 
@@ -310,26 +316,60 @@ double *cmp_hv(t_game *data, double startx,double starty, double angle)
 	double *horwallhit;
 	double *verwallhit;
 
-	wallhit = malloc(sizeof(double) * 2);
+	wallhit = malloc(sizeof(double) * 3);
 	if (!wallhit)
 		return (NULL);
 	horwallhit = ft_horisontal(data, startx, starty, angle);
 	verwallhit = ft_verisontal(data, startx, starty, angle);
 	distances = get_distance(data, horwallhit, verwallhit);
-	if (distances[0] < distances[1])
+	if (distances[0] <= distances[1])
 	{
 		wallhit[0] = horwallhit[0];
 		wallhit[1] = horwallhit[1];
+		wallhit[2] = (double)rgb(0,103,72,255);
 	}
 	else
 	{
 		wallhit[0] = verwallhit[0];
 		wallhit[1] = verwallhit[1];
+		wallhit[2] = (double)rgb(238,216,186,255);
 	}
 	return (free(horwallhit), free(verwallhit), free(distances), wallhit);
 }
 
-void rectangle(mlx_image_t *img, double x, double y, double width, double height)
+int rgb(int r, int g, int b, int a)
+{
+	return (r << 24 | g << 16 | b << 8 | a);
+}
+
+void pint_bg(mlx_image_t *img, double x, double y)
+{
+	double i;
+	double j;
+	int sky_color;
+	int flor_color;
+	
+	sky_color = rgb(125, 166, 189, 255);
+	flor_color = rgb(117,107,93,255);
+	if (x < 0) x = 0;
+    if (y < 0) y = 0;
+	
+	i = x;
+	while (i < (x + W))
+	{	
+		j = y;
+		while (j < (y + H))
+		{
+			if (j < (y + (H / 2)))
+				mlx_put_pixel(img, i, j, sky_color);
+			else
+				mlx_put_pixel(img, i, j, flor_color);
+			j++;
+		}
+		i++;
+	}
+}
+void rectangle(t_game *data, double x, double y, double width, double height)
 {
 	double i;
 	double j;
@@ -337,8 +377,8 @@ void rectangle(mlx_image_t *img, double x, double y, double width, double height
 	(void) height;
 	if (x < 0) x = 0;
     if (y < 0) y = 0;
-    if (x + width > img->width) width = img->width - x;
-    if (y + height > img->height) height = img->height ;
+    if (x + width > data->game->width) width = data->game->width - x;
+    if (y + height > data->game->height) height = data->game->height;
 	
 	i = x;
 	while (i < (x + width))
@@ -346,7 +386,7 @@ void rectangle(mlx_image_t *img, double x, double y, double width, double height
 		j = y;
 		while (j < (y + height))
 		{
-			mlx_put_pixel(img, i, j, 0x4a747dFF);
+			mlx_put_pixel(data->game, i, j, data->color);
 			j++;
 		}
 		i++;
@@ -369,7 +409,8 @@ void reander_walls(t_game *data, double **rays)
 		dis = distance(data->x, data->y, ray[0], ray[1]) * cos(angle - data->ply.rotation_angle);
 		dis_plane = (W / 2) / tan(FOV_ANGLE / 2);
 		wall_height = (CELL / dis) * dis_plane;
-		rectangle(data->game, i * WALL_STRIP_WIDTH, (H / 2) - (wall_height/ 2), WALL_STRIP_WIDTH, wall_height);
+		data->color = ray[2];
+		rectangle(data, i * WALL_STRIP_WIDTH, (H / 2) - (wall_height/ 2), WALL_STRIP_WIDTH, wall_height);
 		i++;
 		angle += FOV_ANGLE / NUM_RAYS;
 	}
@@ -406,17 +447,11 @@ void rebiuld(t_game *data)
 		|| mlx_is_key_down(data->mlx, MLX_KEY_DOWN) || mlx_is_key_down(data->mlx, MLX_KEY_RIGHT) 
 		|| mlx_is_key_down(data->mlx, MLX_KEY_LEFT)) )
 	{
-		mlx_delete_image(data->mlx, data->game);
-		data->game = mlx_new_image(data->mlx, W, H);
-		mlx_image_to_window(data->mlx, data->game, 0, 0);
-		
+		data->color = 0;
+		rectangle(data,0,0,W,H);
 		mlx_delete_image(data->mlx, data->line);
 		data->line = mlx_new_image(data->mlx, data->w * CELL, data->h * CELL);
 		mlx_image_to_window(data->mlx, data->line, 0, 0);
-		
-		mlx_delete_image(data->mlx, data->wall);
-		data->wall = mlx_new_image(data->mlx, CELL, CELL);
-		pint(data->wall, CELL, CELL, 0xFFFFFFFF);
 	}
 }
 
@@ -440,7 +475,6 @@ void ft_move(t_game *data)
 	if (mlx_is_key_down(data->mlx, MLX_KEY_D))
 		data->ply.side_direction = (+1);
 	rebiuld(data);
-	rander_minimap(data, false);
 	data->ply.rotation_angle += data->ply.turn_direction * data->ply.rotationSpeed;
 	data->ply.side_angle += data->ply.turn_direction * data->ply.rotationSpeed;
 }
@@ -471,6 +505,8 @@ void ft_hook(void* param)
 		data->player->instances->x = newx;
 		data->player->instances->y = newy;
 	}
+	data->x = data->player->instances->x;
+	data->y = data->player->instances->y;
 	cast_all_rays(data);
 }
 
