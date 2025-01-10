@@ -147,7 +147,7 @@ After that I see if the player is trying side ways or forward and update the pla
 	}
 
 ```
-![movestep](movestep.png)
+![movestep](moveStep.png)
 
 I then check for collisions with the walls.
 with the following function
