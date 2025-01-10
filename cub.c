@@ -6,7 +6,7 @@
 /*   By: eismail <eismail@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 18:04:11 by eismail           #+#    #+#             */
-/*   Updated: 2025/01/10 10:35:49 by eismail          ###   ########.fr       */
+/*   Updated: 2025/01/10 11:55:29 by eismail          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,12 +106,8 @@ void rander_minimap(t_game *data, bool p)
 	
 void ft_mlx_init(t_game *data)
 {
-	int h;
-	int w;
 	mlx_image_t *bg;
 	
-	h = ft_height(data->map) * CELL;
-	w = ft_wedth(data->map) * CELL;
 	data->h = ft_height(data->map);
 	data->w = ft_wedth(data->map);
 	data->mlx = mlx_init(W, H, "cub", true);
@@ -124,7 +120,7 @@ void ft_mlx_init(t_game *data)
 	data->game = mlx_new_image(data->mlx, W, H);
 	mlx_image_to_window(data->mlx, data->game, 0, 0);
 	
-	data->line = mlx_new_image(data->mlx, w, h);
+	data->line = mlx_new_image(data->mlx, W, H);
 	mlx_image_to_window(data->mlx, data->line, 0, 0);
 	
 	data->wall = mlx_new_image(data->mlx, CELL, CELL);
@@ -487,8 +483,6 @@ void ft_hook(void* param)
 	double newx;
 	double newy;
 	
-	data->x = data->player->instances->x;
-	data->y = data->player->instances->y;
 	ft_move(data);
 	data->ply.movestep = data->ply.walk_direction * data->ply.move_speed;
 	if (data->ply.movestep == 0)
