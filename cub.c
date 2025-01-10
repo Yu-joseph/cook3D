@@ -6,7 +6,7 @@
 /*   By: eismail <eismail@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 18:04:11 by eismail           #+#    #+#             */
-/*   Updated: 2025/01/09 14:50:10 by eismail          ###   ########.fr       */
+/*   Updated: 2025/01/10 10:35:49 by eismail          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -322,17 +322,17 @@ double *cmp_hv(t_game *data, double startx,double starty, double angle)
 	horwallhit = ft_horisontal(data, startx, starty, angle);
 	verwallhit = ft_verisontal(data, startx, starty, angle);
 	distances = get_distance(data, horwallhit, verwallhit);
-	if (distances[0] <= distances[1])
+	if (distances[0] < distances[1])
 	{
 		wallhit[0] = horwallhit[0];
 		wallhit[1] = horwallhit[1];
-		wallhit[2] = (double)rgb(0,103,72,255);
+		wallhit[2] = (double)rgb(0, 103, 72, 255);
 	}
-	else
+	else 
 	{
 		wallhit[0] = verwallhit[0];
 		wallhit[1] = verwallhit[1];
-		wallhit[2] = (double)rgb(238,216,186,255);
+		wallhit[2] = (double)rgb(238, 216, 186, 255);
 	}
 	return (free(horwallhit), free(verwallhit), free(distances), wallhit);
 }
@@ -373,12 +373,14 @@ void rectangle(t_game *data, double x, double y, double width, double height)
 {
 	double i;
 	double j;
-	(void) width;
-	(void) height;
-	if (x < 0) x = 0;
-    if (y < 0) y = 0;
-    if (x + width > data->game->width) width = data->game->width - x;
-    if (y + height > data->game->height) height = data->game->height;
+	if (x < 0)
+		x = 0;
+    if (y < 0) 
+		y = 0;
+    if (x + width > data->game->width)
+		width = data->game->width - x;
+    if (y + height > data->game->height)
+		height = data->game->height - y;
 	
 	i = x;
 	while (i < (x + width))
@@ -405,11 +407,11 @@ void reander_walls(t_game *data, double **rays)
 	angle = data->ply.rotation_angle - (FOV_ANGLE / 2);
 	while (i < NUM_RAYS)
 	{
+		data->color = rays[i][2];
 		ray = rays[i];
 		dis = distance(data->x, data->y, ray[0], ray[1]) * cos(angle - data->ply.rotation_angle);
 		dis_plane = (W / 2) / tan(FOV_ANGLE / 2);
 		wall_height = (CELL / dis) * dis_plane;
-		data->color = ray[2];
 		rectangle(data, i * WALL_STRIP_WIDTH, (H / 2) - (wall_height/ 2), WALL_STRIP_WIDTH, wall_height);
 		i++;
 		angle += FOV_ANGLE / NUM_RAYS;
