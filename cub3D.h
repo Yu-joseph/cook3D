@@ -107,7 +107,7 @@ void rectangle(t_game *data, double x, double y, double width, double height);
 double *cmp_hv(t_game *data, double startx,double starty, double angle);
 double *get_distance(t_game *data, double *horwallhit, double *verwallhit);
 void norm_engle(t_game *data, double *angle);
-double* ft_verisontal(t_game *data, double startx, double starty, double angl);
+double* ft_vertical(t_game *data, double startx, double starty, double angl);
 double *wallhit(t_game *data, double xinter, double yinter , double xstep, double ystep);
 double distance(double x0, double y0, double x1,double y1);
 bool haswall(double x, double y, t_game *data);

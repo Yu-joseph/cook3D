@@ -6,7 +6,7 @@
 /*   By: eismail <eismail@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 18:04:11 by eismail           #+#    #+#             */
-/*   Updated: 2025/01/10 11:55:29 by eismail          ###   ########.fr       */
+/*   Updated: 2025/01/10 14:52:38 by eismail          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -227,7 +227,7 @@ double *wallhit(t_game *data, double xinter, double yinter , double xstep, doubl
 	return (wallhit);
 }
 
-double* ft_verisontal(t_game *data, double startx, double starty, double angl)
+double* ft_vertical(t_game *data, double startx, double starty, double angl)
 {
 	double yinter;
 	double xinter;
@@ -316,7 +316,7 @@ double *cmp_hv(t_game *data, double startx,double starty, double angle)
 	if (!wallhit)
 		return (NULL);
 	horwallhit = ft_horisontal(data, startx, starty, angle);
-	verwallhit = ft_verisontal(data, startx, starty, angle);
+	verwallhit = ft_vertical(data, startx, starty, angle);
 	distances = get_distance(data, horwallhit, verwallhit);
 	if (distances[0] < distances[1])
 	{
