@@ -6,7 +6,7 @@
 /*   By: eismail <eismail@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 18:04:11 by eismail           #+#    #+#             */
-/*   Updated: 2025/01/10 14:52:38 by eismail          ###   ########.fr       */
+/*   Updated: 2025/01/11 11:59:24 by eismail          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,18 @@ int	ft_height(char **s)
 
 int	ft_wedth(char **s)
 {
-	return (ft_strlen(s[0]));
+	size_t max_lenght;
+	int i;
+	
+	i = 0;
+	max_lenght = ft_strlen(s[0]);
+	while (s[i])
+	{
+		if (ft_strlen(s[i]) > max_lenght)
+			max_lenght = ft_strlen(s[i]);
+		i++;
+	}
+	return (max_lenght);
 }
 
 void pint(mlx_image_t *img, int h, int w, int color)
@@ -161,6 +172,8 @@ bool phaswall(double x, double y, t_game *data)
 	
 	if (x < 0 || x > (data->w * CELL) || y < 0 || y > (data->h * CELL))
 		return (true);
+	if ((size_t)floor(x / CELL) >= ft_strlen(data->map[(size_t)floor(y / CELL)]) )
+		return (true);
 	int dx = 0; 
 	while(dx < PLAYER)
 	{
@@ -185,9 +198,9 @@ bool haswall(double x, double y, t_game *data)
 	
 	cell_x = floor(x / CELL);
 	cell_y = floor(y / CELL);
-	if (x < 0 || x >= (data->w * CELL) || y < 0 || y >= (data->h * CELL))
+	if (x < 0 || x > (data->w * CELL) || y < 0 || y > (data->h * CELL))
 		return (true);
-	if ((unsigned long)(cell_x) >= ft_strlen(data->map[cell_y]) )
+	if ((size_t)(cell_x) >= ft_strlen(data->map[cell_y]) )
 		return (true);
 	if (data->map[cell_y][cell_x] == '1')
 		return (true);
@@ -210,7 +223,8 @@ double *wallhit(t_game *data, double xinter, double yinter , double xstep, doubl
 	wallhit = malloc(sizeof(double) * 2);
 	wallhit[0] = 0;
 	wallhit[1] = 0;
-	while ((nexthity >= 0 && nexthitx >= 0 && nexthitx < (data->w * CELL) && nexthity < (data->h * CELL)))
+	while ((nexthity >= 0 && nexthitx >= 0 && nexthity < (data->h * CELL) 
+		&& nexthitx < (data->w * CELL) && (size_t)floor(nexthitx / CELL) < ft_strlen(data->map[(size_t)floor(nexthity / CELL)])))
 	{
 		if (haswall(nexthitx, nexthity, data))
 		{
@@ -236,16 +250,19 @@ double* ft_vertical(t_game *data, double startx, double starty, double angl)
 	double *verwallhit;
 
 	xinter = floor(startx / CELL) * CELL;
-	xinter += data->right ? CELL : 0;
+	if(data->right)
+		xinter += CELL;
 	yinter = starty + ((xinter - startx) * tan(angl));
 	xstep = CELL;
-	xstep *= data->left ? -1 : 1;
-	
-	ystep = CELL * tan(angl);
-	ystep *= (data->up && ystep > 0) ? -1 : 1;
-	ystep *= (data->down && ystep < 0) ? -1 : 1;
 	if (data->left)
-		verwallhit = wallhit(data, xinter - 1, yinter, xstep, ystep);
+		xstep *= -1;
+	ystep = CELL * tan(angl);
+	if(data->up && ystep > 0)
+		ystep *= -1;
+	if (data->down && ystep < 0)
+		ystep *= -1;
+	if (data->left)
+		verwallhit = wallhit(data, xinter - 0.000001, yinter, xstep, ystep);
 	else
 		verwallhit = wallhit(data, xinter, yinter, xstep, ystep);
 	return (verwallhit);
@@ -259,16 +276,19 @@ double* ft_horisontal(t_game *data, double startx, double starty, double angl)
 	double *horwallhit;
 	
 	yinter = floor(starty / CELL) * CELL;
-	yinter += data->down ? CELL : 0;
-	
+	if (data->down)
+		yinter += CELL;
 	xinter = startx + ((yinter - starty) / tan(angl));
 	xstep = CELL / tan(angl);
 	ystep = CELL;
-	ystep *= data->up ? (-1) : 1;
-	xstep *= (data->left && xstep > 0) ? -1 : 1;
-	xstep *= (data->right && xstep < 0) ? -1 : 1;
 	if (data->up)
-		horwallhit = wallhit(data, xinter, yinter - 1, xstep, ystep);
+		ystep *= -1;
+	if(data->left && xstep > 0)
+		xstep *= -1;
+	if (data->right && xstep < 0)
+		xstep *= -1;
+	if (data->up)
+		horwallhit = wallhit(data, xinter, yinter - 0.00001, xstep, ystep);
 	else
 		horwallhit = wallhit(data, xinter, yinter, xstep, ystep);
 	return (horwallhit);
