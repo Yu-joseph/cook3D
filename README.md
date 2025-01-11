@@ -102,7 +102,7 @@ void chose_angle(t_game *data, char p)
 	data->ply.side_angle = data->ply.rotation_angle + (M_PI /2);
 }
 ```
-![Alt text](image.png)
+![Alt text](img/image.png)
 
 I then create a loop that will run until the window is closed. i update the player position and direction in this loop. I also check for key presses to update the player position and direction accordingly.
   
@@ -147,7 +147,7 @@ After that I see if the player is trying side ways or forward and update the pla
 	}
 
 ```
-![movestep](moveStep.png)
+![movestep](img/moveStep.png)
 
 I then check for collisions with the walls.
 with the following function
@@ -200,7 +200,23 @@ void norm_engle(t_game *data, double *angle)
 	
 }
 ```
-Then I search the x and y of the herizontal and vertical wall hit and i calculate the distance and choose the shortest distance , and I draw a ray from the player to that x and y.
+Then I search the x and y of the herizontal and vertical wall hit and i calculate the distance and choose the shortest distance.
+
+first I calculate the x and y of the first wall hit with the following function
+
+![possition](img/possition.png)
+
+Then we calculate the herizontal intersections
+
+![horizontal](img/horizontal.png)
+
+Then we calculate the vertical intersections
+
+![vertical](img/vertical.png)
+
+Then we choose the shortest distance
+
+And I draw a ray from the player to that x and y.
 with the following function
 ```c
 void draw_line(mlx_image_t *mlx, int x0, int y0, int x1, int y1, int color)
@@ -256,7 +272,7 @@ void reander_walls(t_game *data, double **rays)
 	}
 }
 ```
-![wall_height](wall_height.png)
+![wall_height](img/wall_height.png)
 
 and that is how I created a dynamic view inside a maze, in which you’ll have to find your way.
 
