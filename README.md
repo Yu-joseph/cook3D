@@ -272,8 +272,10 @@ void reander_walls(t_game *data, double **rays)
 	}
 }
 ```
+This is the math behind the wall height
+![wall_height](img/adjacent.png)
 ![wall_height](img/wall_height.png)
 
-and that is how I created a dynamic view inside a maze, in which you’ll have to find your way.
+And that is how I created a dynamic view inside a maze, in which you’ll have to find your way.
 
 <a href="#top">Back to top</a>
