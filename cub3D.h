@@ -77,6 +77,7 @@ typedef struct s_texters
     double x;
     double y;
     double distance;
+    double wall_height;
     bool vertical;
 }t_texters;
 

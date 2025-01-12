@@ -6,7 +6,7 @@
 /*   By: eismail <eismail@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 18:04:11 by eismail           #+#    #+#             */
-/*   Updated: 2025/01/12 10:33:54 by eismail          ###   ########.fr       */
+/*   Updated: 2025/01/12 11:15:33 by eismail          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -410,6 +410,21 @@ void rectangle(t_game *data, double x, double y, double width, double height)
 		i++;
 	}
 }
+void fill_rays(t_game *data, double *ray, int i, double dis)
+{
+	double dis_plane;
+	
+	dis_plane = (W / 2) / tan(FOV_ANGLE / 2);
+	data->rays[i].x = ray[0];
+	data->rays[i].y = ray[1];
+	data->rays[i].wall_height = (CELL / dis) * dis_plane;
+	data->rays[i].distance = distance(data->x, data->y, ray[0], ray[1]);
+	if (ray[2] == rgb(238, 216, 186, 255))
+		data->rays[i].vertical = true;
+	else
+		data->rays[i].vertical = false;
+}
+
 void reander_walls(t_game *data, double **rays)
 {
 	double dis;
@@ -422,13 +437,7 @@ void reander_walls(t_game *data, double **rays)
 	angle = data->ply.rotation_angle - (FOV_ANGLE / 2);
 	while (i < NUM_RAYS)
 	{
-		data->rays[i].x = rays[i][0];
-		data->rays[i].y = rays[i][1];
-		data->rays[i].distance = distance(data->x, data->y, rays[i][0], rays[i][1]);
-		if (rays[i][2] == rgb(238, 216, 186, 255))
-			data->rays[i].vertical = true;
-		else
-			data->rays[i].vertical = false;
+		fill_rays(data, rays[i], i, dis);
 		data->color = rays[i][2];
 		dis = distance(data->x, data->y, rays[i][0], rays[i][1]) * cos(angle - data->ply.rotation_angle);
 		dis_plane = (W / 2) / tan(FOV_ANGLE / 2);
