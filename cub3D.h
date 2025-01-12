@@ -72,6 +72,14 @@ typedef struct s_ply_info
     double movestep;
 }t_ply_info;
 
+typedef struct s_texters
+{
+    double x;
+    double y;
+    double distance;
+    bool vertical;
+}t_texters;
+
 typedef struct s_game
 {
     mlx_t	*mlx;
@@ -86,12 +94,12 @@ typedef struct s_game
     bool left  ;
     char **map;
     char *ls;
-    double *rays[NUM_RAYS];
     mlx_image_t* wall;
     mlx_image_t* player;
     mlx_image_t *line;
     mlx_image_t *game;
     t_ply_info ply;
+    t_texters rays[NUM_RAYS];
 }t_game;
 /*************************/
 int rgb(int r, int g, int b, int a);

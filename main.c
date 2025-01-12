@@ -6,7 +6,7 @@
 /*   By: eismail <eismail@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 12:01:10 by ysouhail          #+#    #+#             */
-/*   Updated: 2025/01/08 13:06:26 by eismail          ###   ########.fr       */
+/*   Updated: 2025/01/12 10:31:32 by eismail          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ int	main(int ac, char **av)
 		free(game.map[i]);
 		i++;
 	}
+	// system("leaks -q cub3D");
 	return (0);
 	//
 	// t_game *game;

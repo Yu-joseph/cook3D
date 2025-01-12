@@ -6,7 +6,7 @@
 /*   By: eismail <eismail@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 18:04:11 by eismail           #+#    #+#             */
-/*   Updated: 2025/01/11 11:59:24 by eismail          ###   ########.fr       */
+/*   Updated: 2025/01/12 10:33:54 by eismail          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -342,13 +342,13 @@ double *cmp_hv(t_game *data, double startx,double starty, double angle)
 	{
 		wallhit[0] = horwallhit[0];
 		wallhit[1] = horwallhit[1];
-		wallhit[2] = (double)rgb(0, 103, 72, 255);
+		wallhit[2] = rgb(0, 103, 72, 255);
 	}
 	else 
 	{
 		wallhit[0] = verwallhit[0];
 		wallhit[1] = verwallhit[1];
-		wallhit[2] = (double)rgb(238, 216, 186, 255);
+		wallhit[2] = rgb(238, 216, 186, 255);
 	}
 	return (free(horwallhit), free(verwallhit), free(distances), wallhit);
 }
@@ -412,7 +412,6 @@ void rectangle(t_game *data, double x, double y, double width, double height)
 }
 void reander_walls(t_game *data, double **rays)
 {
-	double *ray;
 	double dis;
 	double dis_plane;
 	double wall_height;
@@ -423,9 +422,15 @@ void reander_walls(t_game *data, double **rays)
 	angle = data->ply.rotation_angle - (FOV_ANGLE / 2);
 	while (i < NUM_RAYS)
 	{
+		data->rays[i].x = rays[i][0];
+		data->rays[i].y = rays[i][1];
+		data->rays[i].distance = distance(data->x, data->y, rays[i][0], rays[i][1]);
+		if (rays[i][2] == rgb(238, 216, 186, 255))
+			data->rays[i].vertical = true;
+		else
+			data->rays[i].vertical = false;
 		data->color = rays[i][2];
-		ray = rays[i];
-		dis = distance(data->x, data->y, ray[0], ray[1]) * cos(angle - data->ply.rotation_angle);
+		dis = distance(data->x, data->y, rays[i][0], rays[i][1]) * cos(angle - data->ply.rotation_angle);
 		dis_plane = (W / 2) / tan(FOV_ANGLE / 2);
 		wall_height = (CELL / dis) * dis_plane;
 		rectangle(data, i * WALL_STRIP_WIDTH, (H / 2) - (wall_height/ 2), WALL_STRIP_WIDTH, wall_height);
