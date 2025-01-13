@@ -82,11 +82,15 @@ typedef struct s_ply_info
 
 typedef struct s_texters
 {
-    double x;
-    double y;
-    double distance;
-    double wall_height;
-    bool vertical;
+    double  x;
+    double  y;
+    double  distance;
+    double  wall_height;
+    bool    vertical;
+    bool    down;
+    bool    up   ; 
+    bool    right ;
+    bool    left  ;
 }t_texters;
 
 typedef struct s_game
@@ -117,6 +121,7 @@ typedef struct s_game
     mlx_image_t *im;
 }t_game;
 /*************************/
+void mouse_mv(t_game *data);
 int rgb(int r, int g, int b, int a);
 void pint_bg(mlx_image_t *img, double x, double y);
 t_ply_info init_ply();
