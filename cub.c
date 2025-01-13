@@ -6,7 +6,7 @@
 /*   By: eismail <eismail@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 18:04:11 by eismail           #+#    #+#             */
-/*   Updated: 2025/01/12 11:15:33 by eismail          ###   ########.fr       */
+/*   Updated: 2025/01/13 17:39:47 by eismail          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,12 @@ void chose_angle(t_game *data, char p)
 		data->ply.rotation_angle = M_PI;
 	if (p == 'E')
 		data->ply.rotation_angle = 0;
+	// int x;
+    // int y;
+
+    // mlx_get_mouse_pos(data->mlx, &x, &y);
+	// printf("before x = %d\n",x);
+	// data->ply.rotation_angle -= (x - (W / 2)) * 0.002;
 	data->ply.side_angle = data->ply.rotation_angle + (M_PI /2);
 }
 void rander_minimap(t_game *data, bool p)
@@ -123,11 +129,12 @@ void ft_mlx_init(t_game *data)
 	data->w = ft_wedth(data->map);
 	data->mlx = mlx_init(W, H, "cub", true);
 	data->player = mlx_new_image(data->mlx, PLAYER, PLAYER);
+	pint(data->player, PLAYER, PLAYER, 0xFF0000FF);
+	
 	bg = mlx_new_image(data->mlx, W, H);
 	mlx_image_to_window(data->mlx, bg, 0, 0);
 	pint_bg(bg, 0, 0);
 	
-	pint(data->player, PLAYER, PLAYER, 0xFF0000FF);
 	data->game = mlx_new_image(data->mlx, W, H);
 	mlx_image_to_window(data->mlx, data->game, 0, 0);
 	
@@ -136,6 +143,8 @@ void ft_mlx_init(t_game *data)
 	
 	data->wall = mlx_new_image(data->mlx, CELL, CELL);
 	pint(data->wall, CELL, CELL, 0xFFFFFFFF);
+	// mlx_set_mouse_pos(data->mlx, (W / 2), (H / 2));
+    mlx_set_cursor_mode(data->mlx, MLX_MOUSE_DISABLED);
 	rander_minimap(data, true);
 }
 
@@ -308,7 +317,6 @@ void norm_engle(t_game *data, double *angle)
 		data->right = false;
 	data->left   = !data->right;
 	data->up     = !data->down;
-	
 }
 double *get_distance(t_game *data, double *horwallhit, double *verwallhit)
 {
@@ -367,14 +375,11 @@ void pint_bg(mlx_image_t *img, double x, double y)
 	
 	sky_color = rgb(125, 166, 189, 255);
 	flor_color = rgb(117,107,93,255);
-	if (x < 0) x = 0;
-    if (y < 0) y = 0;
-	
 	i = x;
-	while (i < (x + W))
+	while (i < W)
 	{	
 		j = y;
-		while (j < (y + H))
+		while (j < H)
 		{
 			if (j < (y + (H / 2)))
 				mlx_put_pixel(img, i, j, sky_color);
@@ -458,6 +463,10 @@ void cast_all_rays(t_game *data)
 	while (colm < NUM_RAYS)
 	{
 		norm_engle(data, &angle);
+		data->rays[colm].down = data->down;
+		data->rays[colm].up = data->up;
+		data->rays[colm].left = data->left;
+		data->rays[colm].right = data->right;
 		rays[colm] = cmp_hv(data, data->x, data->y, angle);
 		draw_line(data->line, data->x, data->y, rays[colm][0], rays[colm][1], 0xFF0000FF);
 		colm++;
@@ -473,11 +482,18 @@ void cast_all_rays(t_game *data)
 }
 void rebiuld(t_game *data)
 {
+	int mouse_x;
+	int mouse_y;
+	
+	mouse_x = 0;
+	mouse_y = 0;
+	static int pos_x;
+	mlx_get_mouse_pos(data->mlx, &mouse_x, &mouse_y);
 	if (!haswall(data->x, data->y, data) && (mlx_is_key_down(data->mlx, MLX_KEY_S) 
 		|| mlx_is_key_down(data->mlx, MLX_KEY_D) || mlx_is_key_down(data->mlx, MLX_KEY_A) 
 		|| mlx_is_key_down(data->mlx, MLX_KEY_UP) || mlx_is_key_down(data->mlx, MLX_KEY_W) 
 		|| mlx_is_key_down(data->mlx, MLX_KEY_DOWN) || mlx_is_key_down(data->mlx, MLX_KEY_RIGHT) 
-		|| mlx_is_key_down(data->mlx, MLX_KEY_LEFT)) )
+		|| mlx_is_key_down(data->mlx, MLX_KEY_LEFT) || mouse_x != pos_x))
 	{
 		data->color = 0;
 		rectangle(data,0,0,W,H);
@@ -485,6 +501,7 @@ void rebiuld(t_game *data)
 		data->line = mlx_new_image(data->mlx, data->w * CELL, data->h * CELL);
 		mlx_image_to_window(data->mlx, data->line, 0, 0);
 	}
+	pos_x = mouse_x;
 }
 
 void ft_move(t_game *data)
@@ -511,12 +528,27 @@ void ft_move(t_game *data)
 	data->ply.side_angle += data->ply.turn_direction * data->ply.rotationSpeed;
 }
 
+void mouse_mv(t_game *data)
+{
+    int x;
+    int y;
+    static int pos_x;
+
+    mlx_get_mouse_pos(data->mlx, &x, &y);
+	if (pos_x != 0)
+		data->ply.rotation_angle += (x - pos_x) * 0.002;
+	pos_x = x;
+	norm_engle(data, &data->ply.rotation_angle);
+	data->ply.side_angle = data->ply.rotation_angle + (M_PI /2);
+}
+
 void ft_hook(void* param)
 {
 	t_game* data = param;
 	double newx;
 	double newy;
 	
+	mouse_mv(data);
 	ft_move(data);
 	data->ply.movestep = data->ply.walk_direction * data->ply.move_speed;
 	if (data->ply.movestep == 0)
@@ -540,26 +572,6 @@ void ft_hook(void* param)
 	cast_all_rays(data);
 }
 
-char **get_map(char *file)
-{
-	int fd;
-	char *map;
-	char *temp;
-	char *line;
-
-
-	fd = open(file, O_RDONLY);
-	map = get_next_line(fd);
-	while ((line = get_next_line(fd)) != NULL)
-	{
-		temp = map;
-		map = ft_strjoin(map, line);
-		free(temp);
-		free(line);
-	}
-	close(fd);
-	return (ft_split(map, '\n'));
-}
 
 t_ply_info init_ply()
 {
@@ -573,4 +585,24 @@ t_ply_info init_ply()
 	ply.movestep = 0;
 	return (ply);
 }
+// char **get_map(char *file)
+// {
+// 	int fd;
+// 	char *map;
+// 	char *temp;
+// 	char *line;
+
+
+// 	fd = open(file, O_RDONLY);
+// 	map = get_next_line(fd);
+// 	while ((line = get_next_line(fd)) != NULL)
+// 	{
+// 		temp = map;
+// 		map = ft_strjoin(map, line);
+// 		free(temp);
+// 		free(line);
+// 	}
+// 	close(fd);
+// 	return (ft_split(map, '\n'));
+// }
 
