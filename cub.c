@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eismail <eismail@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ysouhail <ysouhail@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 18:04:11 by eismail           #+#    #+#             */
-/*   Updated: 2025/01/12 11:15:33 by eismail          ###   ########.fr       */
+/*   Updated: 2025/01/13 22:38:39 by ysouhail         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -538,6 +538,7 @@ void ft_hook(void* param)
 	data->x = data->player->instances->x;
 	data->y = data->player->instances->y;
 	cast_all_rays(data);
+	// draw_texture(data);
 }
 
 char **get_map(char *file)

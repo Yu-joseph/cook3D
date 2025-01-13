@@ -6,19 +6,52 @@
 /*   By: ysouhail <ysouhail@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 13:09:58 by ysouhail          #+#    #+#             */
-/*   Updated: 2025/01/07 11:44:57 by ysouhail         ###   ########.fr       */
+/*   Updated: 2025/01/10 15:18:06 by ysouhail         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3D.h"
 
-void	check_li(char *line)
+bool	check_rest(char *str)
 {
-	int i = 0;
+	int i;
+
+	i = 1;
+	while (str[i])
+	{
+		if (str[i] != '\n')
+			return (false);
+		else if(str[i] == '\n')
+			i++;
+	}
+	return true;
+}
+
+void	check_li(char *line, char *stp)
+{
+	size_t i = 0;
 	while (line[i])
 	{
-		if (line[i] == '\n' && line[i + 1] == '\n')
-			exit(write(2, "Error\nemtpyline", 15));
+		if (ft_strncmp(&line[i], stp , ft_strlen(stp)) == 0)
+			break;
+		i++;
+	}
+	while (line[i])
+	{
+		if (ft_strncmp(&line[i], "\n\n", 2) == 0)
+		{
+			i+=2;
+			if (i > ft_strlen(line))
+				return;
+			while (line[i])
+			{
+				if(line[i] == '0')
+					exit(write(2, "Error\nemtp0yline", 16));
+				else if(line[i] == '\n')
+					break;
+				i++;
+			}
+		}
 		i++;
 	}
 }
@@ -56,7 +89,7 @@ void	skip_sp(char **str)
 	}
 }
 
-bool	fill_elem(char *str, t_elem *elem)
+bool	fill_elem(char *str, t_elem *elem, t_path *l)
 {
 	// printf("..%s..\n", str);
 	// if (str[0] == ' ')
@@ -76,7 +109,7 @@ bool	fill_elem(char *str, t_elem *elem)
 		elem->c++;
 	else
 		return (false);
-	check_path(str);
+	check_path(str, l);
 	return (true);
 }
 
@@ -212,22 +245,42 @@ void	check_number(int n)
 		exit(write(2, "ERROR\nBAD RGB\n", 14));
 	}
 }
-void	handle_redir(char *str)
+// void	init_path(t_path *p)
+// {
+// 	p->EA = NULL;
+// 	p->WE = NULL;
+// 	p->NO = NULL;
+// 	p->SO = NULL;
+// }
+void	fill_path(char *s, char *l, t_path *p)
+{
+	if (ft_strncmp(s, "NO", 2) == 0)
+		p->NO = l;
+	else if (ft_strncmp(s, "WE", 2) == 0)
+		p->WE = l;
+	else if (ft_strncmp(s, "SO", 2) == 0)
+		p->SO = l;
+	else if (ft_strncmp(s, "EA", 2) == 0)
+		p->EA = l;
+	
+}
+void	handle_redir(char *str, t_path *s)
 {
 	int i;
 	char	**l;
+	// t_path path ;
 
+	// init_path(&path);
 	i = 2;
 	l = ft_split(str, ' ');
 	if(!l[1] || str_long(l) != 2)
 		exit(write(2, "ERROR\nbad [PATH]\n", 17));
 	i = open(l[1], O_RDONLY);
-	printf("%s\n", str);
 	if (i < 0)
 		exit(write(2, "ERROR\ninvalid path\n", 19));
 	else
 		close(i);
-	
+	fill_path(l[0],l[1], s);
 }
 
 bool	check_arg(char **c)
@@ -241,27 +294,8 @@ bool	check_arg(char **c)
 	}
 	
 	return false;
-	// int i = 0;
-	// int j = 0;
-	// while (c[i])
-	// {
-	// 	j = 0;
-	// 	skip_sp(&c[i]);
-	// 	while (c[i][j] != ' ' && c[i][j] != '\0')
-	// 		j++;
-	// 	// if (c[i][j] == '\0')
-	// 	// 	;
-	// 	if (c[i][j] == ' ')
-	// 	{
-	// 		skip_sp(&c[i]);
-	// 		if (c[i][j] != '\0')
-	// 			return (true);
-	// 	}
-	// 	i++;
-	// }
-	// return (false);
 }
-void	check_path(char *str)
+void	check_path(char *str, t_path *l)
 {
 	int		i;
 	char	**c;
@@ -287,7 +321,7 @@ void	check_path(char *str)
 			check_number(ft_atoi(c[i]));
 	}
 	else
-		handle_redir(str);
+		handle_redir(str, l);
 }
 void	emt_line(char *line)
 {
@@ -300,8 +334,7 @@ void	emt_line(char *line)
 		{
 			while (line[i])
 			{
-				if (
-					line[i] == '\n' && line[i + 1] == '\n')
+				if (line[i] == '\n' && line[i + 1] == '\n')
 					exit(write(2, "Error\nemtpyline", 15));
 				i++;
 			}
@@ -311,7 +344,7 @@ void	emt_line(char *line)
 	}
 	
 }
-void	parse_map(char **str, t_game *game)
+void	parse_map(char **str, t_game *game, t_path *l)
 {
 	int j = 0;
 	t_elem	elem;
@@ -321,7 +354,7 @@ void	parse_map(char **str, t_game *game)
 	{
 		if (str[j][0] == ' ')
 			skip_sp(&str[j]);
-		if (fill_elem(&str[j][0], &elem) == false)
+		if (fill_elem(&str[j][0], &elem , l) == false)
 			exit(write(2, "ERROR\nbad lines\n", 16));
 		else if (elem.c == 1 && elem.f == 1 && elem.no == 1 && elem.ea == 1 && elem.we == 1 && elem.so == 1)
 		{
@@ -332,7 +365,8 @@ void	parse_map(char **str, t_game *game)
 	}
 	if (elem.c != 1 || elem.f != 1 || elem.no != 1 || elem.ea != 1 || elem.we != 1 || elem.so != 1)
 		exit(write(2, "ERROR\nbad lines\n", 16));
-	emt_line(game->ls);
+	// emt_line(game->ls);
+	check_li(game->ls, str[j+1]);
 	handle_map(&str[j+1]);
 	game->map = &str[j+1];
 }

@@ -37,6 +37,14 @@
 # define NUM_RAYS 2500
 
 
+typedef struct s_path
+{
+    char *WE;
+    char *NO;
+    char *SO;
+    char *EA;
+}   t_path;
+
 typedef struct s_util
 {
 	int		j;
@@ -101,6 +109,12 @@ typedef struct s_game
     mlx_image_t *game;
     t_ply_info ply;
     t_texters rays[NUM_RAYS];
+    /******/
+    mlx_texture_t			*no;
+	mlx_texture_t			*we;
+	mlx_texture_t			*so;
+	mlx_texture_t			*ea;
+    mlx_image_t *im;
 }t_game;
 /*************************/
 int rgb(int r, int g, int b, int a);
@@ -129,11 +143,13 @@ int	ft_height(char **s);
 int cross(t_game *data);
 int close_window(int keycode, void *param);
 /*************************/
-void	parse_map(char **str, t_game *game);
+void	parse_map(char **str, t_game *game, t_path *l);
 char	**check_map(char *str, t_game *game);
 bool	check_name(char *str);
 int		str_cmp(char *s1, char *s2);
 bool	is_redir(char c);
-void	check_path(char *str);
+void	check_path(char *str, t_path *l);
 int		str_long(char **str);
+// void    draw_texture(t_game *data);
+// void    draw_texter(t_game *data);
 #endif
