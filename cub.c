@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ysouhail <ysouhail@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: eismail <eismail@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 18:04:11 by eismail           #+#    #+#             */
-/*   Updated: 2025/01/13 22:51:04 by ysouhail         ###   ########.fr       */
+/*   Updated: 2025/01/18 10:29:30 by eismail          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,7 +143,6 @@ void ft_mlx_init(t_game *data)
 	
 	data->wall = mlx_new_image(data->mlx, CELL, CELL);
 	pint(data->wall, CELL, CELL, 0xFFFFFFFF);
-	// mlx_set_mouse_pos(data->mlx, (W / 2), (H / 2));
     mlx_set_cursor_mode(data->mlx, MLX_MOUSE_DISABLED);
 	rander_minimap(data, true);
 }
@@ -444,6 +443,7 @@ void reander_walls(t_game *data, double **rays)
 	{
 		fill_rays(data, rays[i], i, dis);
 		data->color = rays[i][2];
+		data->rays[i].angle = angle;
 		dis = distance(data->x, data->y, rays[i][0], rays[i][1]) * cos(angle - data->ply.rotation_angle);
 		dis_plane = (W / 2) / tan(FOV_ANGLE / 2);
 		wall_height = (CELL / dis) * dis_plane;
