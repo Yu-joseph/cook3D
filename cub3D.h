@@ -156,6 +156,6 @@ int		str_cmp(char *s1, char *s2);
 bool	is_redir(char c);
 void	check_path(char *str, t_path *l);
 int		str_long(char **str);
-// void    draw_texture(t_game *data);
+void draw_texture(t_game *data);
 // void    draw_texter(t_game *data);
 #endif

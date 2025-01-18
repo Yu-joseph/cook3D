@@ -6,7 +6,7 @@
 /*   By: eismail <eismail@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 18:04:11 by eismail           #+#    #+#             */
-/*   Updated: 2025/01/18 10:29:30 by eismail          ###   ########.fr       */
+/*   Updated: 2025/01/18 10:37:25 by eismail          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -570,7 +570,7 @@ void ft_hook(void* param)
 	data->x = data->player->instances->x;
 	data->y = data->player->instances->y;
 	cast_all_rays(data);
-	// draw_texture(data);
+	draw_texture(data);
 }
 
 

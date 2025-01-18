@@ -6,7 +6,7 @@
 /*   By: ysouhail <ysouhail@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 13:09:58 by ysouhail          #+#    #+#             */
-/*   Updated: 2025/01/10 15:18:06 by ysouhail         ###   ########.fr       */
+/*   Updated: 2025/01/14 15:24:59 by ysouhail         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,22 +131,46 @@ bool	check_elem(t_elem *elem)
 		return true;
 	return (false);
 }
-void	map_checker(char **str, int j, int i)
+// void	map_checker(char **str, int j, int i)
+// {
+// 	if ((str[j][i+1] != '1' && 
+// 	str[j][i+1] != '0' && is_redir(str[j][i+1]) == false) 
+// 		|| (str[j][i-1] != '1' && str[j][i-1] != '0' && is_redir(str[j][i-1]) == false))
+// 	{
+// 		exit(write(2, "ERROR\nMAP NOT !\n", 16));
+// 	}
+// 	else if ((str[j-1][i] != '1' && str[j-1][i] != '0' && is_redir(str[j-1][i]) == false))
+// 	{
+// 		exit(write(2, "ERROR\nMAP NOT VA=!!\n", 20));
+// 	}
+// 	else if ((str[j+1][i] != '1' && str[j+1][i] != '0' && is_redir(str[j+1][i]) == false))
+// 	{
+// 		exit(write(2, "ERROR\nMAP NOT VA=!!\n", 20));
+// 	}
+// }
+
+void    map_checker(char **str, int j, int i)
 {
-	if ((str[j][i+1] != '1' && str[j][i+1] != '0' && is_redir(str[j][i+1]) == false) 
-		|| (str[j][i-1] != '1' && str[j][i-1] != '0' && is_redir(str[j][i-1]) == false))
-	{
+	if (i == 0)
 		exit(write(2, "ERROR\nMAP NOT !\n", 16));
-	}
-	else if ((str[j-1][i] != '1' && str[j-1][i] != '0' && is_redir(str[j-1][i]) == false))
-	{
-		exit(write(2, "ERROR\nMAP NOT VA=!!\n", 20));
-	}
-	else if ((str[j+1][i] != '1' && str[j+1][i] != '0' && is_redir(str[j+1][i]) == false))
-	{
-		exit(write(2, "ERROR\nMAP NOT VA=!!\n", 20));
-	}
+    else if (ft_strlen(str[j]) > (size_t)i && (str[j][i+1] != '1' && str[j][i+1] != '0' && is_redir(str[j][i+1]) == false))
+    {
+        exit(write(2, "ERROR\nMAP NOT !\n", 16));
+    }
+    else if (j != 0 && (str[j-1][i] != '1' && str[j-1][i] != '0' && is_redir(str[j-1][i]) == false))
+    {
+        exit(write(2, "ERROR\nMAP NOT VA=!!\n", 20));
+    }
+    else if (str_long(str) > j &&(str[j+1][i] != '1' && str[j+1][i] != '0' && is_redir(str[j+1][i]) == false))
+    {
+        exit(write(2, "ERROR\nMAP NOT VA=!!\n", 20));
+    }
+    else if (i != 0 && (str[j][i-1] != '1' && str[j][i-1] != '0' && is_redir(str[j][i-1]) == false))
+    {
+        exit(write(2, "ERROR\nMAP NOT VA=!!\n", 20));
+    }
 }
+
 
 // void	check_path(char **map, int y, int x, t_game *game)
 // {
