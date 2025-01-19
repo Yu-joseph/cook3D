@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ysouhail <ysouhail@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: eismail <eismail@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 12:01:10 by ysouhail          #+#    #+#             */
-/*   Updated: 2025/01/15 16:15:49 by ysouhail         ###   ########.fr       */
+/*   Updated: 2025/01/19 10:12:02 by eismail          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,28 +28,28 @@ void load_img(t_game *game, t_path *l)
 	
 }
 
-void draw_texture(t_game *data)
-{
-	static double i = 0;
-	// (void)data;
-	// double x_txt;
-	double s[2];
-	if (s[0] < 0)
-		s[0] = 0;
-	s[1] = i;
-	i += WALL_STRIP_WIDTH;
-	s[0] = (H /  2) - (data-> / 2); 
-	printf("ll=%f\n", s[0]);
-	// while (i < NUM_RAYS)
-	// {
+// void draw_texture(t_game *data)
+// {
+// 	static double i = 0;
+// 	// (void)data;
+// 	// double x_txt;
+// 	double s[2];
+// 	if (s[0] < 0)
+// 		s[0] = 0;
+// 	s[1] = i;
+// 	i += WALL_STRIP_WIDTH;
+// 	// s[0] = (H /  2) - (data-> / 2); 
+// 	printf("ll=%f\n", s[0]);
+// 	// while (i < NUM_RAYS)
+// 	// {
 		
-	// 	// printf(" x = %f\n" , data->rays[i].x);
-	// 	// printf(" y = %f\n" , data->rays[i].y);
-	// 	i++;
-	// }
-	// printf("jjjj/jjj=%d\n",i);
+// 	// 	// printf(" x = %f\n" , data->rays[i].x);
+// 	// 	// printf(" y = %f\n" , data->rays[i].y);
+// 	// 	i++;
+// 	// }
+// 	// printf("jjjj/jjj=%d\n",i);
 	
-}
+// }
 
 
 int	main(int ac, char **av)
@@ -65,7 +65,7 @@ int	main(int ac, char **av)
 	parse_map(check_map(av[1], &game), &game, &l);
 	game.ply = init_ply();
 	ft_mlx_init(&game);
-	load_img(&game, &l);
+	// load_img(&game, &l);
 	mlx_loop_hook(game.mlx, ft_hook, &game);
 	mlx_loop(game.mlx);
 	int i = 0;

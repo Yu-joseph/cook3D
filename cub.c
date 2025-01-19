@@ -6,7 +6,7 @@
 /*   By: eismail <eismail@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 18:04:11 by eismail           #+#    #+#             */
-/*   Updated: 2025/01/18 10:37:25 by eismail          ###   ########.fr       */
+/*   Updated: 2025/01/19 10:18:40 by eismail          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -441,10 +441,10 @@ void reander_walls(t_game *data, double **rays)
 	angle = data->ply.rotation_angle - (FOV_ANGLE / 2);
 	while (i < NUM_RAYS)
 	{
-		fill_rays(data, rays[i], i, dis);
 		data->color = rays[i][2];
 		data->rays[i].angle = angle;
 		dis = distance(data->x, data->y, rays[i][0], rays[i][1]) * cos(angle - data->ply.rotation_angle);
+		fill_rays(data, rays[i], i, dis);
 		dis_plane = (W / 2) / tan(FOV_ANGLE / 2);
 		wall_height = (CELL / dis) * dis_plane;
 		rectangle(data, i * WALL_STRIP_WIDTH, (H / 2) - (wall_height/ 2), WALL_STRIP_WIDTH, wall_height);
@@ -570,7 +570,7 @@ void ft_hook(void* param)
 	data->x = data->player->instances->x;
 	data->y = data->player->instances->y;
 	cast_all_rays(data);
-	draw_texture(data);
+	// draw_texture(data);
 }
 
 
