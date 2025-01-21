@@ -26,8 +26,8 @@
 #include "libft/libft.h"
 #include "get/get_next_line.h"
 
-# define CELL 30
-# define PLAYER 5
+# define CELL 10
+# define PLAYER 2
 # define W 2500
 # define H 1300
 # define MINI_W 320
@@ -95,6 +95,7 @@ typedef struct s_texters
     double  y;
     double  distance;
     double  wall_height;
+    double  angle;
     bool    vertical;
     bool    down;
     bool    up   ; 

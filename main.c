@@ -6,7 +6,7 @@
 /*   By: ysouhail <ysouhail@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 12:01:10 by ysouhail          #+#    #+#             */
-/*   Updated: 2025/01/21 12:58:46 by ysouhail         ###   ########.fr       */
+/*   Updated: 2025/01/21 13:27:56 by ysouhail         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -256,7 +256,7 @@ int	main(int ac, char **av)
 	parse_map(check_map(av[1], &game), &game, &l);
 	game.ply = init_ply();
 	ft_mlx_init(&game);
-	load_img(&game, &l);
+	// load_img(&game, &l);
 	mlx_loop_hook(game.mlx, ft_hook, &game);
 	mlx_loop(game.mlx);
 	int i = 0;
