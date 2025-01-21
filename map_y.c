@@ -6,7 +6,7 @@
 /*   By: ysouhail <ysouhail@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 13:09:58 by ysouhail          #+#    #+#             */
-/*   Updated: 2025/01/14 15:24:59 by ysouhail         ###   ########.fr       */
+/*   Updated: 2025/01/21 13:20:56 by ysouhail         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -261,13 +261,26 @@ void	handle_map(char **str)
 	if(t.x != 1)
 		exit(write(2, "ERROR\nMAP NOT VALID!!\n", 22));
 }
-void	check_number(int n)
+void	check_number(char **c)
 {
-	printf("atoi=%d\n", n);
-	if (!(n <= 255 && n >= 0))
+	// if (!(n <= 255 && n >= 0))
+	// {
+	// 	exit(write(2, "ERROR\nBAD RGB\n", 14));
+	// }
+	int	i;
+	// int	n;
+
+	i = 0;
+	while (c[i])
 	{
-		exit(write(2, "ERROR\nBAD RGB\n", 14));
+		if (!(ft_atoi(c[i]) <= 255 && ft_atoi(c[i]) >= 0))
+		{
+			exit(write(2, "ERROR\nBAD RGB\n", 14));
+		}
+		i++;
 	}
+	
+	
 }
 // void	init_path(t_path *p)
 // {
@@ -340,9 +353,7 @@ void	check_path(char *str, t_path *l)
 		c = ft_split(&str[i], ',');
 		if(str_long(c) != 3 || check_arg(c) == true)
 			exit(write(2, "ERROR\nerror many arg\n", 21));
-		i = -1;
-		while (c[++i])
-			check_number(ft_atoi(c[i]));
+		check_number(c);
 	}
 	else
 		handle_redir(str, l);
@@ -389,7 +400,6 @@ void	parse_map(char **str, t_game *game, t_path *l)
 	}
 	if (elem.c != 1 || elem.f != 1 || elem.no != 1 || elem.ea != 1 || elem.we != 1 || elem.so != 1)
 		exit(write(2, "ERROR\nbad lines\n", 16));
-	// emt_line(game->ls);
 	check_li(game->ls, str[j+1]);
 	handle_map(&str[j+1]);
 	game->map = &str[j+1];

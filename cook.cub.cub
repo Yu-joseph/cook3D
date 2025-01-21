@@ -1,13 +1,13 @@
 
 EA        /Users/ysouhail/Desktop/issa/text/stone_2.png
-WE      /Users/ysouhail/Desktop/issa/text/stone_2.png
+WE      /Users/ysouhail/Desktop/issa/text/star.png
 
 
 
 
-NO /Users/ysouhail/Desktop/issa/text/stone_2.png
-SO /Users/ysouhail/Desktop/issa/text/stone_2.png      
-F                 12 , 1   ,     +1  
+NO /Users/ysouhail/Desktop/issa/text/star.png
+SO /Users/ysouhail/Desktop/issa/text/sinwaricon_(1).png     
+F                 0000012 , 1   ,     +11  
 C 255, 12 ,0
 
 1111111111     111
@@ -15,11 +15,11 @@ C 255, 12 ,0
 1111000001     101
 1000000001     111   
 1000001001
-101000W011
+1010000011
 100000000111111111
 111110100000000001
     10100000111001
-    10100000001001
+    10100N000001001
     10100011111001
     10100001100001
     10100000000001

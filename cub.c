@@ -6,7 +6,7 @@
 /*   By: ysouhail <ysouhail@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 18:04:11 by eismail           #+#    #+#             */
-/*   Updated: 2025/01/14 23:39:32 by ysouhail         ###   ########.fr       */
+/*   Updated: 2025/01/19 11:00:04 by ysouhail         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,7 +134,7 @@ void ft_mlx_init(t_game *data)
 	bg = mlx_new_image(data->mlx, W, H);
 	mlx_image_to_window(data->mlx, bg, 0, 0);
 	pint_bg(bg, 0, 0);
-	
+	// data->yssf = mlx_new_image(data->mlx, W, H);
 	data->game = mlx_new_image(data->mlx, W, H);
 	mlx_image_to_window(data->mlx, data->game, 0, 0);
 	
@@ -423,6 +423,7 @@ void fill_rays(t_game *data, double *ray, int i, double dis)
 	data->rays[i].x = ray[0];
 	data->rays[i].y = ray[1];
 	data->rays[i].wall_height = (CELL / dis) * dis_plane;
+	// printf(",,,%f\n",data->rays[i].wall_height);
 	data->rays[i].distance = distance(data->x, data->y, ray[0], ray[1]);
 	if (ray[2] == rgb(238, 216, 186, 255))
 		data->rays[i].vertical = true;
@@ -442,10 +443,10 @@ void reander_walls(t_game *data, double **rays)
 	angle = data->ply.rotation_angle - (FOV_ANGLE / 2);
 	while (i < NUM_RAYS)
 	{
-		fill_rays(data, rays[i], i, dis);
 		data->color = rays[i][2];
 		dis = distance(data->x, data->y, rays[i][0], rays[i][1]) * cos(angle - data->ply.rotation_angle);
 		dis_plane = (W / 2) / tan(FOV_ANGLE / 2);
+		fill_rays(data, rays[i], i, dis);
 		wall_height = (CELL / dis) * dis_plane;
 		rectangle(data, i * WALL_STRIP_WIDTH, (H / 2) - (wall_height/ 2), WALL_STRIP_WIDTH, wall_height);
 		i++;
