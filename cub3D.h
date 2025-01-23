@@ -65,6 +65,15 @@ typedef struct s_elem
 }	t_elem;
 
 
+typedef struct s_clr
+{
+    int **ea;
+    int **we;
+    int **no;
+    int **so;
+}t_clr;
+
+
 typedef struct s_ply_info
 {
     double x;
@@ -116,11 +125,17 @@ typedef struct s_game
     t_ply_info ply;
     t_texters rays[NUM_RAYS];
     /******/
+    // int p;
     mlx_texture_t			*no;
 	mlx_texture_t			*we;
 	mlx_texture_t			*so;
 	mlx_texture_t			*ea;
-    mlx_image_t *im;
+    mlx_image_t             *i_no;
+    mlx_image_t             *i_we;
+    mlx_image_t             *i_so;
+    mlx_image_t             *i_ea;
+    t_clr                   clr;
+    mlx_image_t             *yssf;
 }t_game;
 /*************************/
 void mouse_mv(t_game *data);
@@ -138,7 +153,7 @@ double *cmp_hv(t_game *data, double startx,double starty, double angle);
 double *get_distance(t_game *data, double *horwallhit, double *verwallhit);
 void norm_engle(t_game *data, double *angle);
 double* ft_vertical(t_game *data, double startx, double starty, double angl);
-double *wallhit(t_game *data, double xinter, double yinter , double xstep, double ystep);
+double *wallhit(t_game *data, double xinter, double yinter , double *steps);
 double distance(double x0, double y0, double x1,double y1);
 bool haswall(double x, double y, t_game *data);
 bool phaswall(double x, double y, t_game *data);
@@ -158,5 +173,6 @@ bool	is_redir(char c);
 void	check_path(char *str, t_path *l);
 int		str_long(char **str);
 void draw_texture(t_game *data);
+int	**get_pixels(mlx_image_t *img);
 // void    draw_texter(t_game *data);
 #endif

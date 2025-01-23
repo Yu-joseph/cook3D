@@ -6,7 +6,7 @@
 /*   By: eismail <eismail@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 18:04:11 by eismail           #+#    #+#             */
-/*   Updated: 2025/01/23 10:06:57 by eismail          ###   ########.fr       */
+/*   Updated: 2025/01/23 10:50:38 by eismail          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,11 +107,11 @@ void rander_minimap(t_game *data, bool p)
 	int x;
 	int y;
 	
-	i = 0;
-	while(data->map[i])
+	i = -1;
+	while(data->map[++i])
 	{
-		j = 0;
-		while(data->map[i][j])
+		j = -1;
+		while(data->map[i][++j])
 		{
 			x = (j * CELL);
 			y = (i * CELL);
@@ -125,9 +125,7 @@ void rander_minimap(t_game *data, bool p)
 				data->x = x;
 				data->y = y;
 			}
-			j++;
 		}
-		i++;
 	}
 }
 	
@@ -138,26 +136,19 @@ void ft_mlx_init(t_game *data)
 	data->h = ft_height(data->map);
 	data->w = ft_wedth(data->map);
 	data->mlx = mlx_init(W, H, "cub", true);
-	
 	data->minimap = mlx_new_image(data->mlx, MINI_W, MINI_H);
 	mlx_image_to_window(data->mlx, data->minimap, 0, 0);
-	
 	data->player = mlx_new_image(data->mlx, PLAYER, PLAYER);
 	pint(data->player, PLAYER, PLAYER, 0xFF000000);
-	
 	bg = mlx_new_image(data->mlx, W, H);
 	mlx_image_to_window(data->mlx, bg, 0, 0);
 	pint_bg(bg, 0, 0);
-	
 	data->game = mlx_new_image(data->mlx, W, H);
 	mlx_image_to_window(data->mlx, data->game, 0, 0);
-	
 	data->line = mlx_new_image(data->mlx, W, H);
 	mlx_image_to_window(data->mlx, data->line, 0, 0);
-	
 	data->wall = mlx_new_image(data->mlx, CELL, CELL);
 	pint(data->wall, CELL, CELL, 0xFFFFFF00);
-	
     mlx_set_cursor_mode(data->mlx, MLX_MOUSE_DISABLED);
 	rander_minimap(data, true);
 }
@@ -235,30 +226,30 @@ double distance(double x0, double y0, double x1,double y1)
 	return (sqrt(((x1 - x0) * (x1 - x0)) + ((y1 - y0) * (y1 - y0))));
 }
 
-double *wallhit(t_game *data, double xinter, double yinter , double xstep, double ystep)
+// bool steping(double nexthitx, double nexthity, t_game *data)
+// {
+
+// }
+
+double *wallhit(t_game *data, double xinter, double yinter , double *steps)
 {
 	double *wallhit;
-	double nexthity;
-	double nexthitx;
-	
-	nexthitx = xinter;
-	nexthity = yinter;
-	wallhit = malloc(sizeof(double) * 2);
-	wallhit[0] = 0;
-	wallhit[1] = 0;
-	while ((nexthity >= 0 && nexthitx >= 0 && nexthity < (data->h * CELL) 
-		&& nexthitx < (data->w * CELL) && (size_t)floor(nexthitx / CELL) < ft_strlen(data->map[(size_t)floor(nexthity / CELL)])))
+
+	wallhit = ft_calloc(sizeof(double), 2);
+	while ((yinter >= 0 && xinter >= 0 && yinter < (data->h * CELL) 
+		&& xinter < (data->w * CELL) && (size_t)floor(xinter / CELL) 
+		< ft_strlen(data->map[(size_t)floor(yinter / CELL)])))
 	{
-		if (haswall(nexthitx, nexthity, data))
+		if (haswall(xinter, yinter, data))
 		{
-			wallhit[0] = nexthitx;
-			wallhit[1] = nexthity;
+			wallhit[0] = xinter;
+			wallhit[1] = yinter;
 			break;
 		}
 		else
 		{
-			nexthitx += xstep;
-			nexthity += ystep;
+			xinter += steps[0];
+			yinter += steps[1];
 		}
 	}
 	return (wallhit);
@@ -268,53 +259,53 @@ double* ft_vertical(t_game *data, double startx, double starty, double angl)
 {
 	double yinter;
 	double xinter;
-	double xstep;
-	double ystep;
+	double *steps;
 	double *verwallhit;
 
+	steps = malloc(sizeof(double) * 2);
 	xinter = floor(startx / CELL) * CELL;
 	if(data->right)
 		xinter += CELL;
 	yinter = starty + ((xinter - startx) * tan(angl));
-	xstep = CELL;
+	steps[0] = CELL;
 	if (data->left)
-		xstep *= -1;
-	ystep = CELL * tan(angl);
-	if(data->up && ystep > 0)
-		ystep *= -1;
-	if (data->down && ystep < 0)
-		ystep *= -1;
+		steps[0] *= -1;
+	steps[1] = CELL * tan(angl);
+	if(data->up && steps[1] > 0)
+		steps[1] *= -1;
+	if (data->down && steps[1] < 0)
+		steps[1] *= -1;
 	if (data->left)
-		verwallhit = wallhit(data, xinter - 0.000001, yinter, xstep, ystep);
+		verwallhit = wallhit(data, xinter - 0.000001, yinter, steps);
 	else
-		verwallhit = wallhit(data, xinter, yinter, xstep, ystep);
-	return (verwallhit);
+		verwallhit = wallhit(data, xinter, yinter, steps);
+	return (free(steps), verwallhit);
 }
 double* ft_horisontal(t_game *data, double startx, double starty, double angl)
 {
 	double yinter;
 	double xinter;
-	double xstep;
-	double ystep;
+	double *steps;
 	double *horwallhit;
 	
+	steps = malloc(sizeof(double) * 2);
 	yinter = floor(starty / CELL) * CELL;
 	if (data->down)
 		yinter += CELL;
 	xinter = startx + ((yinter - starty) / tan(angl));
-	xstep = CELL / tan(angl);
-	ystep = CELL;
+	steps[0] = CELL / tan(angl);
+	steps[1] = CELL;
 	if (data->up)
-		ystep *= -1;
-	if(data->left && xstep > 0)
-		xstep *= -1;
-	if (data->right && xstep < 0)
-		xstep *= -1;
+		steps[1] *= -1;
+	if(data->left && steps[0] > 0)
+		steps[0] *= -1;
+	if (data->right && steps[0] < 0)
+		steps[0] *= -1;
 	if (data->up)
-		horwallhit = wallhit(data, xinter, yinter - 0.00001, xstep, ystep);
+		horwallhit = wallhit(data, xinter, yinter - 0.00001, steps);
 	else
-		horwallhit = wallhit(data, xinter, yinter, xstep, ystep);
-	return (horwallhit);
+		horwallhit = wallhit(data, xinter, yinter, steps);
+	return (free(steps), horwallhit);
 }
 void norm_engle(t_game *data, double *angle)
 {
@@ -461,6 +452,7 @@ void reander_walls(t_game *data, double **rays)
 		dis = distance(data->x, data->y, rays[i][0], rays[i][1]) * cos(angle - data->ply.rotation_angle);
 		fill_rays(data, rays[i], i, dis);
 		dis_plane = (W / 2) / tan(FOV_ANGLE / 2);
+		fill_rays(data, rays[i], i, dis);
 		wall_height = (CELL / dis) * dis_plane;
 		rectangle(data, i * WALL_STRIP_WIDTH, (H / 2) - (wall_height/ 2), WALL_STRIP_WIDTH, wall_height);
 		i++;
@@ -513,33 +505,30 @@ void draw_square(void *img, int startx, int starty, int size, int color)
     }
 }
 
-
 void minimap(t_game *data)
 {
 	int x;
 	int y;
 	int *arry;
-	int cell_x;
+	size_t cell_x;
 	int cell_y;
 
 	cell_x = 0;
 	cell_y = 0;
 	arry = minimap_size(data);
-	y = 0;
-	while(y < MINI_H - CELL )
+	y = -1;
+	while(++y < MINI_H - CELL)
 	{
-		x = 0;
-		while(x < MINI_W - CELL && cell_x < arry[2] && cell_y < arry[3])
+		x = -1;
+		while(++x < MINI_W - CELL && (int)cell_x < arry[2] && cell_y < arry[3])
 		{
 			cell_x = ((arry[0] + x) / CELL);
 			cell_y = ((arry[1] + y) / CELL);
-			mlx_put_pixel(data->minimap, x, y, 0x000000FF);
-			if (cell_y >= 0 && cell_y < data->h && cell_x >= 0 && (size_t)cell_x < ft_strlen(data->map[cell_y])
-				&& data->map[cell_y][cell_x] && data->map[cell_y][cell_x] == '1')
-				mlx_put_pixel(data->minimap, x, y, 0xFFFFFFFF);
-			x++;
+			mlx_put_pixel(data->minimap, x, y, 0x000000CC);
+			if (cell_y >= 0 && cell_y < data->h && cell_x >= 0 
+				&& cell_x < ft_strlen(data->map[cell_y]) && data->map[cell_y][cell_x] == '1')
+				mlx_put_pixel(data->minimap, x, y, 0xFFFFFF99);
 		}
-		y++;
 	}
 	draw_square(data->minimap, MINI_W / 2 , MINI_H / 2, PLAYER, 0xFF0000FF);
 	free(arry);
@@ -635,7 +624,7 @@ void ft_hook(void* param)
 	data->x = data->player->instances->x;
 	data->y = data->player->instances->y;
 	cast_all_rays(data);
-	// draw_texture(data);
+	draw_texture(data);
 }
 
 
