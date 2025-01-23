@@ -6,7 +6,7 @@
 /*   By: eismail <eismail@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 18:04:11 by eismail           #+#    #+#             */
-/*   Updated: 2025/01/19 10:18:40 by eismail          ###   ########.fr       */
+/*   Updated: 2025/01/23 10:06:57 by eismail          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ void pint(mlx_image_t *img, int h, int w, int color)
 	i =0;
 	while (i < h)
 	{
-		j =0;
+		j = 0;
 		while (j < w)
 		{
 			mlx_put_pixel(img, i, j, color);
@@ -84,14 +84,22 @@ void chose_angle(t_game *data, char p)
 		data->ply.rotation_angle = M_PI;
 	if (p == 'E')
 		data->ply.rotation_angle = 0;
-	// int x;
-    // int y;
-
-    // mlx_get_mouse_pos(data->mlx, &x, &y);
-	// printf("before x = %d\n",x);
-	// data->ply.rotation_angle -= (x - (W / 2)) * 0.002;
 	data->ply.side_angle = data->ply.rotation_angle + (M_PI /2);
 }
+
+int *minimap_size(t_game *data)
+{
+	int *bounds;
+	bounds = malloc(sizeof(int) * 4);
+	if (!bounds)
+		return (NULL);
+	bounds[0] = (data->x - (MINI_W / 2));
+	bounds[1] = (data->y - (MINI_H / 2));
+	bounds[2] = (data->x + (MINI_W / 2));
+	bounds[3] = (data->y + (MINI_H / 2));
+	return (bounds);
+}
+
 void rander_minimap(t_game *data, bool p)
 {
 	int i;
@@ -105,8 +113,8 @@ void rander_minimap(t_game *data, bool p)
 		j = 0;
 		while(data->map[i][j])
 		{
-			x = j * CELL;
-			y = i * CELL;
+			x = (j * CELL);
+			y = (i * CELL);
 			if (data->map[i][j] && data->map[i][j] == '1')
 				mlx_image_to_window(data->mlx, data->wall, x, y);
 			if (data->map[i][j] && (data->map[i][j] == 'S' || data->map[i][j] == 'W' 
@@ -114,6 +122,8 @@ void rander_minimap(t_game *data, bool p)
 			{
 				chose_angle(data, data->map[i][j]);
 				mlx_image_to_window(data->mlx, data->player, x, y);
+				data->x = x;
+				data->y = y;
 			}
 			j++;
 		}
@@ -128,8 +138,12 @@ void ft_mlx_init(t_game *data)
 	data->h = ft_height(data->map);
 	data->w = ft_wedth(data->map);
 	data->mlx = mlx_init(W, H, "cub", true);
+	
+	data->minimap = mlx_new_image(data->mlx, MINI_W, MINI_H);
+	mlx_image_to_window(data->mlx, data->minimap, 0, 0);
+	
 	data->player = mlx_new_image(data->mlx, PLAYER, PLAYER);
-	pint(data->player, PLAYER, PLAYER, 0xFF0000FF);
+	pint(data->player, PLAYER, PLAYER, 0xFF000000);
 	
 	bg = mlx_new_image(data->mlx, W, H);
 	mlx_image_to_window(data->mlx, bg, 0, 0);
@@ -142,7 +156,8 @@ void ft_mlx_init(t_game *data)
 	mlx_image_to_window(data->mlx, data->line, 0, 0);
 	
 	data->wall = mlx_new_image(data->mlx, CELL, CELL);
-	pint(data->wall, CELL, CELL, 0xFFFFFFFF);
+	pint(data->wall, CELL, CELL, 0xFFFFFF00);
+	
     mlx_set_cursor_mode(data->mlx, MLX_MOUSE_DISABLED);
 	rander_minimap(data, true);
 }
@@ -468,7 +483,7 @@ void cast_all_rays(t_game *data)
 		data->rays[colm].left = data->left;
 		data->rays[colm].right = data->right;
 		rays[colm] = cmp_hv(data, data->x, data->y, angle);
-		draw_line(data->line, data->x, data->y, rays[colm][0], rays[colm][1], 0xFF0000FF);
+		// draw_line(data->line, data->x, data->y, rays[colm][0], rays[colm][1], 0xFF0000FF);
 		colm++;
 		angle += FOV_ANGLE / NUM_RAYS;
 	}
@@ -479,6 +494,55 @@ void cast_all_rays(t_game *data)
 		free(rays[colm]);
 		colm++;
 	}
+}
+void draw_square(void *img, int startx, int starty, int size, int color) 
+{
+    int i;
+	int j;
+	
+	i = starty;
+    while (i < (starty + size)) 
+	{
+		j = startx;
+        while (j < (startx + size)) 
+		{
+            mlx_put_pixel(img,j , i, color);
+			j++;
+		}
+		i++;
+    }
+}
+
+
+void minimap(t_game *data)
+{
+	int x;
+	int y;
+	int *arry;
+	int cell_x;
+	int cell_y;
+
+	cell_x = 0;
+	cell_y = 0;
+	arry = minimap_size(data);
+	y = 0;
+	while(y < MINI_H - CELL )
+	{
+		x = 0;
+		while(x < MINI_W - CELL && cell_x < arry[2] && cell_y < arry[3])
+		{
+			cell_x = ((arry[0] + x) / CELL);
+			cell_y = ((arry[1] + y) / CELL);
+			mlx_put_pixel(data->minimap, x, y, 0x000000FF);
+			if (cell_y >= 0 && cell_y < data->h && cell_x >= 0 && (size_t)cell_x < ft_strlen(data->map[cell_y])
+				&& data->map[cell_y][cell_x] && data->map[cell_y][cell_x] == '1')
+				mlx_put_pixel(data->minimap, x, y, 0xFFFFFFFF);
+			x++;
+		}
+		y++;
+	}
+	draw_square(data->minimap, MINI_W / 2 , MINI_H / 2, PLAYER, 0xFF0000FF);
+	free(arry);
 }
 void rebiuld(t_game *data)
 {
@@ -496,11 +560,12 @@ void rebiuld(t_game *data)
 		|| mlx_is_key_down(data->mlx, MLX_KEY_LEFT) || mouse_x != pos_x))
 	{
 		data->color = 0;
-		rectangle(data,0,0,W,H);
-		mlx_delete_image(data->mlx, data->line);
-		data->line = mlx_new_image(data->mlx, data->w * CELL, data->h * CELL);
-		mlx_image_to_window(data->mlx, data->line, 0, 0);
+		rectangle(data, 0, 0, W, H);
 	}
+	mlx_delete_image(data->mlx,data->minimap);
+	data->minimap = mlx_new_image(data->mlx, MINI_W, MINI_H);
+	mlx_image_to_window(data->mlx, data->minimap, 0, 0);
+	minimap(data);
 	pos_x = mouse_x;
 }
 
@@ -586,24 +651,5 @@ t_ply_info init_ply()
 	ply.movestep = 0;
 	return (ply);
 }
-// char **get_map(char *file)
-// {
-// 	int fd;
-// 	char *map;
-// 	char *temp;
-// 	char *line;
 
-
-// 	fd = open(file, O_RDONLY);
-// 	map = get_next_line(fd);
-// 	while ((line = get_next_line(fd)) != NULL)
-// 	{
-// 		temp = map;
-// 		map = ft_strjoin(map, line);
-// 		free(temp);
-// 		free(line);
-// 	}
-// 	close(fd);
-// 	return (ft_split(map, '\n'));
-// }
 

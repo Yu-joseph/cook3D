@@ -27,11 +27,11 @@
 #include "get/get_next_line.h"
 
 # define CELL 10
-# define PLAYER 2
+# define PLAYER 5
 # define W 2500
 # define H 1300
-# define MINI_W 320
-# define MINI_H 200
+# define MINI_W 250
+# define MINI_H 250
 # define FOV_ANGLE 60 * (M_PI / 180)
 # define WALL_STRIP_WIDTH 1
 # define NUM_RAYS 2500
@@ -112,6 +112,7 @@ typedef struct s_game
     mlx_image_t* player;
     mlx_image_t *line;
     mlx_image_t *game;
+    mlx_image_t *minimap;
     t_ply_info ply;
     t_texters rays[NUM_RAYS];
     /******/
