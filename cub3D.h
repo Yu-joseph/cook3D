@@ -28,21 +28,27 @@
 
 # define CELL 10
 # define PLAYER 2
-# define W 2500
-# define H 1300
+# define W 1280
+# define H 720
 # define MINI_W 320
 # define MINI_H 200
 # define FOV_ANGLE 60 * (M_PI / 180)
 # define WALL_STRIP_WIDTH 1
-# define NUM_RAYS 2500
+# define NUM_RAYS 1280
 
 
 typedef struct s_path
 {
-    char *WE;
-    char *NO;
-    char *SO;
-    char *EA;
+    char    *WE;
+    char    *NO;
+    char    *SO;
+    char    *EA;
+    int     f_r;
+    int     f_g;
+    int     f_b;
+    int     c_r;
+    int     c_g;
+    int     c_b;
 }   t_path;
 
 typedef struct s_util
@@ -125,6 +131,7 @@ typedef struct s_game
     t_texters rays[NUM_RAYS];
     /******/
     // int p;
+    t_path                  *path;
     mlx_texture_t			*no;
 	mlx_texture_t			*we;
 	mlx_texture_t			*so;
@@ -133,6 +140,12 @@ typedef struct s_game
     mlx_image_t             *i_we;
     mlx_image_t             *i_so;
     mlx_image_t             *i_ea;
+    int                     f_r;
+    int                     f_g;
+    int                     f_b;
+    int                     c_r;
+    int                     c_g;
+    int                     c_b;
     t_clr                   clr;
     mlx_image_t             *yssf;
 }t_game;
@@ -171,7 +184,9 @@ int		str_cmp(char *s1, char *s2);
 bool	is_redir(char c);
 void	check_path(char *str, t_path *l);
 int		str_long(char **str);
-void draw_texture(t_game *data);
-int	**get_pixels(mlx_image_t *img);
+void    draw_texture(t_game *data);
+int     **get_pixels(mlx_image_t *img);
+void	free_d(char **t);
+void    free_path(t_path *p);
 // void    draw_texter(t_game *data);
 #endif

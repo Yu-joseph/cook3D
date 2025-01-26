@@ -6,7 +6,7 @@
 /*   By: ysouhail <ysouhail@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 18:04:11 by eismail           #+#    #+#             */
-/*   Updated: 2025/01/21 13:30:16 by ysouhail         ###   ########.fr       */
+/*   Updated: 2025/01/23 00:18:33 by ysouhail         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -371,7 +371,7 @@ void pint_bg(mlx_image_t *img, double x, double y)
 	double j;
 	int sky_color;
 	int flor_color;
-	
+	//yssf
 	sky_color = rgb(125, 166, 189, 255);
 	flor_color = rgb(117,107,93,255);
 	i = x;
@@ -459,6 +459,9 @@ void cast_all_rays(t_game *data)
 	int colm;
 	double angle;
 	double *rays[NUM_RAYS];
+	// printf("c-r=%d\n",data->c_r);
+	// printf("c-g=%d\n",data->c_g);
+	// printf("c-b=%d\n",data->c_b);
 
 	colm = 0;
 	angle = data->ply.rotation_angle - (FOV_ANGLE / 2);
