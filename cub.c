@@ -6,7 +6,7 @@
 /*   By: ysouhail <ysouhail@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 18:04:11 by eismail           #+#    #+#             */
-/*   Updated: 2025/01/23 00:18:33 by ysouhail         ###   ########.fr       */
+/*   Updated: 2025/01/26 23:48:19 by ysouhail         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ void pint(mlx_image_t *img, int h, int w, int color)
 	i =0;
 	while (i < h)
 	{
-		j =0;
+		j = 0;
 		while (j < w)
 		{
 			mlx_put_pixel(img, i, j, color);
@@ -84,14 +84,22 @@ void chose_angle(t_game *data, char p)
 		data->ply.rotation_angle = M_PI;
 	if (p == 'E')
 		data->ply.rotation_angle = 0;
-	// int x;
-    // int y;
-
-    // mlx_get_mouse_pos(data->mlx, &x, &y);
-	// printf("before x = %d\n",x);
-	// data->ply.rotation_angle -= (x - (W / 2)) * 0.002;
 	data->ply.side_angle = data->ply.rotation_angle + (M_PI /2);
 }
+
+int *minimap_size(t_game *data)
+{
+	int *bounds;
+	bounds = malloc(sizeof(int) * 4);
+	if (!bounds)
+		return (NULL);
+	bounds[0] = (data->x - (MINI_W / 2));
+	bounds[1] = (data->y - (MINI_H / 2));
+	bounds[2] = (data->x + (MINI_W / 2));
+	bounds[3] = (data->y + (MINI_H / 2));
+	return (bounds);
+}
+
 void rander_minimap(t_game *data, bool p)
 {
 	int i;
@@ -99,14 +107,14 @@ void rander_minimap(t_game *data, bool p)
 	int x;
 	int y;
 	
-	i = 0;
-	while(data->map[i])
+	i = -1;
+	while(data->map[++i])
 	{
-		j = 0;
-		while(data->map[i][j])
+		j = -1;
+		while(data->map[i][++j])
 		{
-			x = j * CELL;
-			y = i * CELL;
+			x = (j * CELL);
+			y = (i * CELL);
 			if (data->map[i][j] && data->map[i][j] == '1')
 				mlx_image_to_window(data->mlx, data->wall, x, y);
 			if (data->map[i][j] && (data->map[i][j] == 'S' || data->map[i][j] == 'W' 
@@ -114,10 +122,10 @@ void rander_minimap(t_game *data, bool p)
 			{
 				chose_angle(data, data->map[i][j]);
 				mlx_image_to_window(data->mlx, data->player, x, y);
+				data->x = x;
+				data->y = y;
 			}
-			j++;
 		}
-		i++;
 	}
 }
 	
@@ -128,21 +136,19 @@ void ft_mlx_init(t_game *data)
 	data->h = ft_height(data->map);
 	data->w = ft_wedth(data->map);
 	data->mlx = mlx_init(W, H, "cub", true);
+	data->minimap = mlx_new_image(data->mlx, MINI_W, MINI_H);
+	mlx_image_to_window(data->mlx, data->minimap, 0, 0);
 	data->player = mlx_new_image(data->mlx, PLAYER, PLAYER);
-	pint(data->player, PLAYER, PLAYER, 0xFF0000FF);
-	
+	pint(data->player, PLAYER, PLAYER, 0xFF000000);
 	bg = mlx_new_image(data->mlx, W, H);
 	mlx_image_to_window(data->mlx, bg, 0, 0);
 	pint_bg(bg, 0, 0);
-	// data->yssf = mlx_new_image(data->mlx, W, H);
 	data->game = mlx_new_image(data->mlx, W, H);
 	mlx_image_to_window(data->mlx, data->game, 0, 0);
-	
 	data->line = mlx_new_image(data->mlx, W, H);
 	mlx_image_to_window(data->mlx, data->line, 0, 0);
-	
 	data->wall = mlx_new_image(data->mlx, CELL, CELL);
-	pint(data->wall, CELL, CELL, 0xFFFFFFFF);
+	pint(data->wall, CELL, CELL, 0xFFFFFF00);
     mlx_set_cursor_mode(data->mlx, MLX_MOUSE_DISABLED);
 	rander_minimap(data, true);
 }
@@ -220,30 +226,30 @@ double distance(double x0, double y0, double x1,double y1)
 	return (sqrt(((x1 - x0) * (x1 - x0)) + ((y1 - y0) * (y1 - y0))));
 }
 
-double *wallhit(t_game *data, double xinter, double yinter , double xstep, double ystep)
+// bool steping(double nexthitx, double nexthity, t_game *data)
+// {
+
+// }
+
+double *wallhit(t_game *data, double xinter, double yinter , double *steps)
 {
 	double *wallhit;
-	double nexthity;
-	double nexthitx;
-	
-	nexthitx = xinter;
-	nexthity = yinter;
-	wallhit = malloc(sizeof(double) * 2);
-	wallhit[0] = 0;
-	wallhit[1] = 0;
-	while ((nexthity >= 0 && nexthitx >= 0 && nexthity < (data->h * CELL) 
-		&& nexthitx < (data->w * CELL) && (size_t)floor(nexthitx / CELL) < ft_strlen(data->map[(size_t)floor(nexthity / CELL)])))
+
+	wallhit = ft_calloc(sizeof(double), 2);
+	while ((yinter >= 0 && xinter >= 0 && yinter < (data->h * CELL) 
+		&& xinter < (data->w * CELL) && (size_t)floor(xinter / CELL) 
+		< ft_strlen(data->map[(size_t)floor(yinter / CELL)])))
 	{
-		if (haswall(nexthitx, nexthity, data))
+		if (haswall(xinter, yinter, data))
 		{
-			wallhit[0] = nexthitx;
-			wallhit[1] = nexthity;
+			wallhit[0] = xinter;
+			wallhit[1] = yinter;
 			break;
 		}
 		else
 		{
-			nexthitx += xstep;
-			nexthity += ystep;
+			xinter += steps[0];
+			yinter += steps[1];
 		}
 	}
 	return (wallhit);
@@ -253,53 +259,53 @@ double* ft_vertical(t_game *data, double startx, double starty, double angl)
 {
 	double yinter;
 	double xinter;
-	double xstep;
-	double ystep;
+	double *steps;
 	double *verwallhit;
 
+	steps = malloc(sizeof(double) * 2);
 	xinter = floor(startx / CELL) * CELL;
 	if(data->right)
 		xinter += CELL;
 	yinter = starty + ((xinter - startx) * tan(angl));
-	xstep = CELL;
+	steps[0] = CELL;
 	if (data->left)
-		xstep *= -1;
-	ystep = CELL * tan(angl);
-	if(data->up && ystep > 0)
-		ystep *= -1;
-	if (data->down && ystep < 0)
-		ystep *= -1;
+		steps[0] *= -1;
+	steps[1] = CELL * tan(angl);
+	if(data->up && steps[1] > 0)
+		steps[1] *= -1;
+	if (data->down && steps[1] < 0)
+		steps[1] *= -1;
 	if (data->left)
-		verwallhit = wallhit(data, xinter - 0.000001, yinter, xstep, ystep);
+		verwallhit = wallhit(data, xinter - 0.000001, yinter, steps);
 	else
-		verwallhit = wallhit(data, xinter, yinter, xstep, ystep);
-	return (verwallhit);
+		verwallhit = wallhit(data, xinter, yinter, steps);
+	return (free(steps), verwallhit);
 }
 double* ft_horisontal(t_game *data, double startx, double starty, double angl)
 {
 	double yinter;
 	double xinter;
-	double xstep;
-	double ystep;
+	double *steps;
 	double *horwallhit;
 	
+	steps = malloc(sizeof(double) * 2);
 	yinter = floor(starty / CELL) * CELL;
 	if (data->down)
 		yinter += CELL;
 	xinter = startx + ((yinter - starty) / tan(angl));
-	xstep = CELL / tan(angl);
-	ystep = CELL;
+	steps[0] = CELL / tan(angl);
+	steps[1] = CELL;
 	if (data->up)
-		ystep *= -1;
-	if(data->left && xstep > 0)
-		xstep *= -1;
-	if (data->right && xstep < 0)
-		xstep *= -1;
+		steps[1] *= -1;
+	if(data->left && steps[0] > 0)
+		steps[0] *= -1;
+	if (data->right && steps[0] < 0)
+		steps[0] *= -1;
 	if (data->up)
-		horwallhit = wallhit(data, xinter, yinter - 0.00001, xstep, ystep);
+		horwallhit = wallhit(data, xinter, yinter - 0.00001, steps);
 	else
-		horwallhit = wallhit(data, xinter, yinter, xstep, ystep);
-	return (horwallhit);
+		horwallhit = wallhit(data, xinter, yinter, steps);
+	return (free(steps), horwallhit);
 }
 void norm_engle(t_game *data, double *angle)
 {
@@ -422,7 +428,6 @@ void fill_rays(t_game *data, double *ray, int i, double dis)
 	data->rays[i].x = ray[0];
 	data->rays[i].y = ray[1];
 	data->rays[i].wall_height = (CELL / dis) * dis_plane;
-	// printf(",,,%f\n",data->rays[i].wall_height);
 	data->rays[i].distance = distance(data->x, data->y, ray[0], ray[1]);
 	if (ray[2] == rgb(238, 216, 186, 255))
 		data->rays[i].vertical = true;
@@ -473,7 +478,7 @@ void cast_all_rays(t_game *data)
 		data->rays[colm].left = data->left;
 		data->rays[colm].right = data->right;
 		rays[colm] = cmp_hv(data, data->x, data->y, angle);
-		draw_line(data->line, data->x, data->y, rays[colm][0], rays[colm][1], 0xFF0000FF);
+		// draw_line(data->line, data->x, data->y, rays[colm][0], rays[colm][1], 0xFF0000FF);
 		colm++;
 		angle += FOV_ANGLE / NUM_RAYS;
 	}
@@ -484,6 +489,52 @@ void cast_all_rays(t_game *data)
 		free(rays[colm]);
 		colm++;
 	}
+}
+void draw_square(void *img, int startx, int starty, int size, int color) 
+{
+    int i;
+	int j;
+	
+	i = starty;
+    while (i < (starty + size)) 
+	{
+		j = startx;
+        while (j < (startx + size)) 
+		{
+            mlx_put_pixel(img,j , i, color);
+			j++;
+		}
+		i++;
+    }
+}
+
+void minimap(t_game *data)
+{
+	int x;
+	int y;
+	int *arry;
+	size_t cell_x;
+	int cell_y;
+
+	cell_x = 0;
+	cell_y = 0;
+	arry = minimap_size(data);
+	y = -1;
+	while(++y < MINI_H - CELL)
+	{
+		x = -1;
+		while(++x < MINI_W - CELL && (int)cell_x < arry[2] && cell_y < arry[3])
+		{
+			cell_x = ((arry[0] + x) / CELL);
+			cell_y = ((arry[1] + y) / CELL);
+			mlx_put_pixel(data->minimap, x, y, 0x000000CC);
+			if (cell_y >= 0 && cell_y < data->h && cell_x >= 0 
+				&& cell_x < ft_strlen(data->map[cell_y]) && data->map[cell_y][cell_x] == '1')
+				mlx_put_pixel(data->minimap, x, y, 0xFFFFFF99);
+		}
+	}
+	draw_square(data->minimap, MINI_W / 2 , MINI_H / 2, PLAYER, 0xFF0000FF);
+	free(arry);
 }
 void rebiuld(t_game *data)
 {
@@ -501,11 +552,12 @@ void rebiuld(t_game *data)
 		|| mlx_is_key_down(data->mlx, MLX_KEY_LEFT) || mouse_x != pos_x))
 	{
 		data->color = 0;
-		rectangle(data,0,0,W,H);
-		mlx_delete_image(data->mlx, data->line);
-		data->line = mlx_new_image(data->mlx, data->w * CELL, data->h * CELL);
-		mlx_image_to_window(data->mlx, data->line, 0, 0);
+		rectangle(data, 0, 0, W, H);
 	}
+	mlx_delete_image(data->mlx,data->minimap);
+	data->minimap = mlx_new_image(data->mlx, MINI_W, MINI_H);
+	mlx_image_to_window(data->mlx, data->minimap, 0, 0);
+	minimap(data);
 	pos_x = mouse_x;
 }
 
@@ -591,24 +643,5 @@ t_ply_info init_ply()
 	ply.movestep = 0;
 	return (ply);
 }
-// char **get_map(char *file)
-// {
-// 	int fd;
-// 	char *map;
-// 	char *temp;
-// 	char *line;
 
-
-// 	fd = open(file, O_RDONLY);
-// 	map = get_next_line(fd);
-// 	while ((line = get_next_line(fd)) != NULL)
-// 	{
-// 		temp = map;
-// 		map = ft_strjoin(map, line);
-// 		free(temp);
-// 		free(line);
-// 	}
-// 	close(fd);
-// 	return (ft_split(map, '\n'));
-// }
 
