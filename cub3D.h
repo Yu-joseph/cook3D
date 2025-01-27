@@ -131,7 +131,7 @@ typedef struct s_game
     mlx_image_t *minimap;
     t_ply_info ply;
     t_texters rays[NUM_RAYS];
-    mlx_image_t *img[28];
+    mlx_image_t *img[ANIM];
     int frame_counter;
 
     /******/
@@ -155,6 +155,7 @@ typedef struct s_game
     mlx_image_t             *yssf;
 }t_game;
 /*************************/
+void clean_img(t_game *data);
 void load_animation(t_game *data);
 void mouse_mv(t_game *data);
 int rgb(int r, int g, int b, int a);
@@ -193,6 +194,6 @@ int		str_long(char **str);
 void    draw_texture(t_game *data);
 int     **get_pixels(mlx_image_t *img);
 void	free_d(char **t);
-void    free_path(t_path *p);
+void    free_path(t_path *p, t_game *game);
 // void    draw_texter(t_game *data);
 #endif

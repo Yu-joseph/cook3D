@@ -6,7 +6,7 @@
 /*   By: eismail <eismail@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 12:01:10 by ysouhail          #+#    #+#             */
-/*   Updated: 2025/01/27 10:28:22 by eismail          ###   ########.fr       */
+/*   Updated: 2025/01/27 11:24:22 by eismail          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -245,42 +245,64 @@ void draw_texture(t_game *data)
         i++;
     }
 }
-
-void	free_path(t_path *p)
+void free_int(int **arry, int size)
 {
-	free(p->EA);
-	free(p->SO);
-	free(p->WE);
-	free(p->NO);
-}
+	int i;
 
+	i = -1;
+	while (++i < size)
+	{
+		free(arry[i]);
+	}
+	free(arry);
+}
+void    free_path(t_path *p, t_game *g)
+{
+    free(p->EA);
+    free(p->SO);
+    free(p->WE);
+    free(p->NO);
+	
+	free_int(g->clr.ea, g->i_ea->height);
+    mlx_delete_image(g->mlx, g->i_ea);
+    mlx_delete_texture(g->ea);
+	
+	free_int(g->clr.so, g->i_so->height);
+    mlx_delete_image(g->mlx, g->i_so);
+    mlx_delete_texture(g->so);
+	
+	free_int(g->clr.no, g->i_no->height);
+    mlx_delete_image(g->mlx, g->i_no);
+    mlx_delete_texture(g->no);
+	
+	free_int(g->clr.we, g->i_we->height);
+    mlx_delete_image(g->mlx, g->i_we);
+    mlx_delete_texture(g->we);
+}
+void l_(void)
+{
+	system("leaks cub3D");
+}
 int	main(int ac, char **av)
 {
 	t_path l;
+	atexit(l_);
 	if(ac  != 2)
 		return (1);
 	(void) ac;
 	t_game game;
 	if(check_name(av[1]) == false)
 		return (1);
-	// game.map = check_map(av[1], &game);
 	char **map = check_map(av[1], &game);
 	parse_map(map, &game, &l);
 	game.ply = init_ply();
 	ft_mlx_init(&game);
 	load_img(&game, &l);
-	load_img(&game, &l);
 	mlx_loop_hook(game.mlx, ft_hook, &game);
 	mlx_loop(game.mlx);
-	int i = 0;
-	// free_path(&l);
-	while (game.map[i])
-	{
-		// printf("%s\n",game.map[i]);
-		free(game.map[i]);
-		i++;
-	}
+	clean_img(&game);
+	free_path(&l, &game);
+	free_d(map);
 	free(game.ls);
-	// system("leaks cub3D");
 	return (0);
 }

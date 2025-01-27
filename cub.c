@@ -6,17 +6,13 @@
 /*   By: eismail <eismail@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 18:04:11 by eismail           #+#    #+#             */
-/*   Updated: 2025/01/27 10:29:36 by eismail          ###   ########.fr       */
+/*   Updated: 2025/01/27 11:23:07 by eismail          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft/libft.h"
 #include <stdio.h>
 #include "cub3D.h"
-
-// static mlx_image_t* wall;
-// static mlx_image_t* player;
-// static mlx_image_t *line;
 
 int close_window(int keycode, void *param)
 {
@@ -452,7 +448,6 @@ void reander_walls(t_game *data, double **rays)
 		dis = distance(data->x, data->y, rays[i][0], rays[i][1]) * cos(angle - data->ply.rotation_angle);
 		fill_rays(data, rays[i], i, dis);
 		dis_plane = (W / 2) / tan(FOV_ANGLE / 2);
-		fill_rays(data, rays[i], i, dis);
 		wall_height = (CELL / dis) * dis_plane;
 		// rectangle(data, i * WALL_STRIP_WIDTH, (H / 2) - (wall_height/ 2), WALL_STRIP_WIDTH, wall_height);
 		i++;
@@ -560,22 +555,14 @@ void rebiuld(t_game *data)
 	minimap(data);
 	pos_x = mouse_x;
 }
-void clean_img(t_game *data, char **img_name,mlx_texture_t** texture, mlx_image_t** img)
+void clean_img(t_game *data)
 {
 	int i = 0;
-	while (i < 28)
+	while (i < ANIM)
 	{
-		mlx_delete_image(data->mlx, img[i]);
-		mlx_delete_texture(texture[i]);
+		mlx_delete_image(data->mlx, data->img[i]);
 		i++;
 	}
-	i = 0;
-	while(img_name[i])
-	{
-		free(img_name[i]);
-		i++;
-	}
-	free(img_name);
 }
 void load_animation(t_game *data)
 {
@@ -594,6 +581,7 @@ void load_animation(t_game *data)
 		img_name = ft_strjoin(tmp, ".png");
 		texture[i] = mlx_load_png(img_name);
 		data->img[i] = mlx_texture_to_image(data->mlx, texture[i]);
+		mlx_delete_texture(texture[i]);
 		mlx_image_to_window(data->mlx, data->img[i],
 			(W/2) - (data->img[i]->width/2) , H - data->img[i]->height);
 		data->img[i]->enabled = false;
@@ -617,13 +605,19 @@ void animation(t_game *data)
         data->img[current_image]->enabled = true;
     }
 }
+void clean_mlx(t_game *data)
+{
+	mlx_close_window(data->mlx);
+}
 void ft_keys(t_game *data)
 {
 	data->ply.turn_direction = 0;
 	data->ply.side_direction = 0;
 	data->ply.walk_direction = 0;
 	if (mlx_is_key_down(data->mlx, MLX_KEY_ESCAPE))
-		mlx_close_window(data->mlx);
+	{
+		clean_mlx(data);
+	}
 	if (mlx_is_key_down(data->mlx, MLX_KEY_UP) || mlx_is_key_down(data->mlx, MLX_KEY_W))
 		data->ply.walk_direction = +1;
 	if (mlx_is_key_down(data->mlx, MLX_KEY_DOWN) || mlx_is_key_down(data->mlx, MLX_KEY_S))
