@@ -6,7 +6,7 @@
 /*   By: eismail <eismail@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 18:04:11 by eismail           #+#    #+#             */
-/*   Updated: 2025/01/23 10:50:38 by eismail          ###   ########.fr       */
+/*   Updated: 2025/01/26 21:12:22 by eismail          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,7 +132,6 @@ void rander_minimap(t_game *data, bool p)
 void ft_mlx_init(t_game *data)
 {
 	mlx_image_t *bg;
-	
 	data->h = ft_height(data->map);
 	data->w = ft_wedth(data->map);
 	data->mlx = mlx_init(W, H, "cub", true);
@@ -151,6 +150,7 @@ void ft_mlx_init(t_game *data)
 	pint(data->wall, CELL, CELL, 0xFFFFFF00);
     mlx_set_cursor_mode(data->mlx, MLX_MOUSE_DISABLED);
 	rander_minimap(data, true);
+	load_animation(data);
 }
 
 void draw_line(mlx_image_t *mlx, int x0, int y0, int x1, int y1, int color)
@@ -338,7 +338,7 @@ double *get_distance(t_game *data, double *horwallhit, double *verwallhit)
 		distance_arry[1] = distance(data->x, data->y, verwallhit[0], verwallhit[1]);
 	return(distance_arry);
 }
-double *cmp_hv(t_game *data, double startx,double starty, double angle)
+double *cmp_hv(t_game *data, double startx, double starty, double angle)
 {
 	double *wallhit;
 	double *distances;
@@ -474,7 +474,7 @@ void cast_all_rays(t_game *data)
 		data->rays[colm].up = data->up;
 		data->rays[colm].left = data->left;
 		data->rays[colm].right = data->right;
-		rays[colm] = cmp_hv(data, data->x, data->y, angle);
+		rays[colm] = cmp_hv(data, data->x , data->y, angle);
 		// draw_line(data->line, data->x, data->y, rays[colm][0], rays[colm][1], 0xFF0000FF);
 		colm++;
 		angle += FOV_ANGLE / NUM_RAYS;
@@ -550,6 +550,9 @@ void rebiuld(t_game *data)
 	{
 		data->color = 0;
 		rectangle(data, 0, 0, W, H);
+		// mlx_delete_image(data->mlx,data->line);
+		// data->line = mlx_new_image(data->mlx,W, H);
+		// mlx_image_to_window(data->mlx, data->line, 0, 0);
 	}
 	mlx_delete_image(data->mlx,data->minimap);
 	data->minimap = mlx_new_image(data->mlx, MINI_W, MINI_H);
@@ -557,8 +560,64 @@ void rebiuld(t_game *data)
 	minimap(data);
 	pos_x = mouse_x;
 }
+void clean_img(t_game *data, char **img_name,mlx_texture_t** texture, mlx_image_t** img)
+{
+	int i = 0;
+	while (i < 28)
+	{
+		mlx_delete_image(data->mlx, img[i]);
+		mlx_delete_texture(texture[i]);
+		i++;
+	}
+	i = 0;
+	while(img_name[i])
+	{
+		free(img_name[i]);
+		i++;
+	}
+	free(img_name);
+}
+void load_animation(t_game *data)
+{
+	int i;
+	char *img_name;
+	char *tmp;
+	char *nums = "123456789ABCDE";
+	mlx_texture_t *texture[ANIM];
+	
+	i = 0;
+	while (i < ANIM)
+	{
+		img_name = ft_substr(nums, i, 1);
+		tmp = ft_strjoin("a/", img_name);
+		free(img_name);
+		img_name = ft_strjoin(tmp, ".png");
+		texture[i] = mlx_load_png(img_name);
+		data->img[i] = mlx_texture_to_image(data->mlx, texture[i]);
+		mlx_image_to_window(data->mlx, data->img[i],
+			(W/2) - (data->img[i]->width/2) , H - data->img[i]->height);
+		data->img[i]->enabled = false;
+		i++;
+		free(tmp);
+		free(img_name);
+	}
+}
 
-void ft_move(t_game *data)
+void animation(t_game *data)
+{	
+	int animation_speed;
+	static int current_image;
+	
+    animation_speed = 2;
+	data->frame_counter++;
+    if (data->frame_counter % animation_speed == 0)
+    {
+        data->img[current_image]->enabled = false;
+        current_image = (current_image + 1) % ANIM;
+        data->img[current_image]->enabled = true;
+    }
+}
+void ft_keys(t_game *data)
 {
 	data->ply.turn_direction = 0;
 	data->ply.side_direction = 0;
@@ -580,6 +639,33 @@ void ft_move(t_game *data)
 	rebiuld(data);
 	data->ply.rotation_angle += data->ply.turn_direction * data->ply.rotationSpeed;
 	data->ply.side_angle += data->ply.turn_direction * data->ply.rotationSpeed;
+	data->ply.movestep = data->ply.walk_direction * data->ply.move_speed;
+}
+
+void ft_move(t_game *data)
+{
+	double newx;
+	double newy;
+
+	ft_keys(data);
+	if (data->ply.movestep == 0)
+	{
+		data->ply.movestep = data->ply.side_direction * data->ply.move_speed;
+		newx = data->player->instances->x + round(cos(data->ply.side_angle) * data->ply.movestep);
+		newy = data->player->instances->y + round(sin(data->ply.side_angle) * data->ply.movestep);
+	}
+	else
+	{
+		newx = data->player->instances->x + round(cos(data->ply.rotation_angle) * data->ply.movestep);
+		newy = data->player->instances->y + round(sin(data->ply.rotation_angle) * data->ply.movestep);	
+	}
+	if (!phaswall(newx, newy, data))
+	{
+		data->player->instances->x = newx;
+		data->player->instances->y = newy;
+	}
+	data->x = data->player->instances->x + (PLAYER / 2);
+	data->y = data->player->instances->y + (PLAYER / 2);
 }
 
 void mouse_mv(t_game *data)
@@ -599,30 +685,10 @@ void mouse_mv(t_game *data)
 void ft_hook(void* param)
 {
 	t_game* data = param;
-	double newx;
-	double newy;
-	
+
 	mouse_mv(data);
 	ft_move(data);
-	data->ply.movestep = data->ply.walk_direction * data->ply.move_speed;
-	if (data->ply.movestep == 0)
-	{
-		data->ply.movestep = data->ply.side_direction * data->ply.move_speed;
-		newx = data->player->instances->x + round(cos(data->ply.side_angle) * data->ply.movestep);
-		newy = data->player->instances->y + round(sin(data->ply.side_angle) * data->ply.movestep);
-	}
-	else
-	{
-		newx = data->player->instances->x + round(cos(data->ply.rotation_angle) * data->ply.movestep);
-		newy = data->player->instances->y + round(sin(data->ply.rotation_angle) * data->ply.movestep);	
-	}
-	if (!phaswall(newx, newy, data))
-	{
-		data->player->instances->x = newx;
-		data->player->instances->y = newy;
-	}
-	data->x = data->player->instances->x;
-	data->y = data->player->instances->y;
+	animation(data);
 	cast_all_rays(data);
 	draw_texture(data);
 }

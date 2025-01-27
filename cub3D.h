@@ -26,15 +26,16 @@
 #include "libft/libft.h"
 #include "get/get_next_line.h"
 
-# define CELL 10
+# define CELL 20
 # define PLAYER 5
-# define W 2500
-# define H 1300
+# define W 1280
+# define H 1100
 # define MINI_W 250
 # define MINI_H 250
 # define FOV_ANGLE 60 * (M_PI / 180)
 # define WALL_STRIP_WIDTH 1
-# define NUM_RAYS 2500
+# define NUM_RAYS W
+# define ANIM 14
 
 
 typedef struct s_path
@@ -124,6 +125,9 @@ typedef struct s_game
     mlx_image_t *minimap;
     t_ply_info ply;
     t_texters rays[NUM_RAYS];
+    mlx_image_t *img[28];
+    int frame_counter;
+
     /******/
     // int p;
     mlx_texture_t			*no;
@@ -138,6 +142,7 @@ typedef struct s_game
     mlx_image_t             *yssf;
 }t_game;
 /*************************/
+void load_animation(t_game *data);
 void mouse_mv(t_game *data);
 int rgb(int r, int g, int b, int a);
 void pint_bg(mlx_image_t *img, double x, double y);
