@@ -6,7 +6,7 @@
 /*   By: ysouhail <ysouhail@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 12:01:10 by ysouhail          #+#    #+#             */
-/*   Updated: 2025/01/26 23:46:35 by ysouhail         ###   ########.fr       */
+/*   Updated: 2025/01/27 10:16:06 by ysouhail         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -271,6 +271,7 @@ int	main(int ac, char **av)
 	load_img(&game, &l);
 	load_img(&game, &l);
 	mlx_loop_hook(game.mlx, ft_hook, &game);
+	system("leaks cub3D");
 	mlx_loop(game.mlx);
 	int i = 0;
 	// free_path(&l);
@@ -281,6 +282,5 @@ int	main(int ac, char **av)
 		i++;
 	}
 	free(game.ls);
-	system("leaks cub3D");
 	return (0);
 }
