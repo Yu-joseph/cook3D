@@ -6,7 +6,7 @@
 /*   By: ysouhail <ysouhail@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 13:09:58 by ysouhail          #+#    #+#             */
-/*   Updated: 2025/01/26 23:39:51 by ysouhail         ###   ########.fr       */
+/*   Updated: 2025/01/27 10:43:02 by ysouhail         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -395,5 +395,4 @@ void	parse_map(char **str, t_game *game, t_path *l)
 	check_li(game->ls, str[j+1]);
 	handle_map(&str[j+1]);
 	game->map = &str[j+1];
-	// free_d(str);
 }
