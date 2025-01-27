@@ -6,7 +6,7 @@
 /*   By: ysouhail <ysouhail@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/11 16:03:51 by eismail           #+#    #+#             */
-/*   Updated: 2025/01/07 10:11:11 by ysouhail         ###   ########.fr       */
+/*   Updated: 2025/01/26 23:33:32 by ysouhail         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,9 @@
 
 void	check_pls(const char *str)
 {
-	int i = 0;
+	int	i;
+
+	i = 0;
 	while (str[i])
 	{
 		if (str[i] == '\0' || ((str[i] == '-'|| str[i] == '+') && str[i+1] == '\0'))

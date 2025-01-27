@@ -6,7 +6,7 @@
 /*   By: ysouhail <ysouhail@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 13:09:58 by ysouhail          #+#    #+#             */
-/*   Updated: 2025/01/21 13:20:56 by ysouhail         ###   ########.fr       */
+/*   Updated: 2025/01/26 23:39:51 by ysouhail         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,31 +27,44 @@ bool	check_rest(char *str)
 	return true;
 }
 
-void	check_li(char *line, char *stp)
+int		count_lingth(char *str, char c)
 {
-	size_t i = 0;
-	while (line[i])
+	int	i;
+
+	i = 0;
+	while (str[i] && str[i] != c)
 	{
-		if (ft_strncmp(&line[i], stp , ft_strlen(stp)) == 0)
+		i++;
+	}
+	return i;
+}
+bool is_valid(char c)
+{
+	if (c == '0' || c == '1')
+		return (true);
+	return (false);
+}
+void	check_li(char *line, char *str)
+{
+	int i = 0;
+	bool err = false;
+	if(!line || !str)
+		exit(write(2, "ERROR\nMAPERROR\n",15));
+	while(line[i])
+	{
+		if (ft_strncmp(&line[i], str, ft_strlen(str))== 0)
 			break;
 		i++;
 	}
 	while (line[i])
 	{
-		if (ft_strncmp(&line[i], "\n\n", 2) == 0)
+		if (ft_strncmp(&line[i], "\n\n", 2) == 0 && err == false)
 		{
-			i+=2;
-			if (i > ft_strlen(line))
-				return;
-			while (line[i])
-			{
-				if(line[i] == '0')
-					exit(write(2, "Error\nemtp0yline", 16));
-				else if(line[i] == '\n')
-					break;
-				i++;
-			}
+			printf("here\n");
+			err = true;
 		}
+		if(err == true && (is_redir(line[i]) == true || is_valid(line[i]) == true))
+			exit(write(2, "Error\nemtp0yline", 16));
 		i++;
 	}
 }
@@ -59,6 +72,7 @@ char	**check_map(char *str, t_game *game)
 {
 	int		fd;
 	char	*tmp;
+	char *t;
 
 	fd = open(str, O_RDONLY);
 	if (fd < 0)
@@ -70,12 +84,16 @@ char	**check_map(char *str, t_game *game)
 		tmp = get_next_line(fd);
 		if (!tmp)
 			break;
-		game->ls = ft_strjoin(game->ls, tmp);
+		t = ft_strjoin(game->ls, tmp);
+		free(game->ls);
+		game->ls = ft_strdup(t);
+		free(t);
 		free(tmp);
 	}
 	close(fd);
 	if (!game->ls)
 		exit(write(2, "Error\nEMTHY\n", 12));
+	
 	return (ft_split(game->ls, '\n'));
 }
 
@@ -91,10 +109,6 @@ void	skip_sp(char **str)
 
 bool	fill_elem(char *str, t_elem *elem, t_path *l)
 {
-	// printf("..%s..\n", str);
-	// if (str[0] == ' ')
-	// 	str = skip_sp(str);
-	// printf("..%s..\n", str);
 	if (ft_strncmp(str, "NO ", 3) == 0)
 		elem->no++;
 	else if (ft_strncmp(str, "SO ", 3) == 0)
@@ -131,23 +145,6 @@ bool	check_elem(t_elem *elem)
 		return true;
 	return (false);
 }
-// void	map_checker(char **str, int j, int i)
-// {
-// 	if ((str[j][i+1] != '1' && 
-// 	str[j][i+1] != '0' && is_redir(str[j][i+1]) == false) 
-// 		|| (str[j][i-1] != '1' && str[j][i-1] != '0' && is_redir(str[j][i-1]) == false))
-// 	{
-// 		exit(write(2, "ERROR\nMAP NOT !\n", 16));
-// 	}
-// 	else if ((str[j-1][i] != '1' && str[j-1][i] != '0' && is_redir(str[j-1][i]) == false))
-// 	{
-// 		exit(write(2, "ERROR\nMAP NOT VA=!!\n", 20));
-// 	}
-// 	else if ((str[j+1][i] != '1' && str[j+1][i] != '0' && is_redir(str[j+1][i]) == false))
-// 	{
-// 		exit(write(2, "ERROR\nMAP NOT VA=!!\n", 20));
-// 	}
-// }
 
 void    map_checker(char **str, int j, int i)
 {
@@ -170,23 +167,6 @@ void    map_checker(char **str, int j, int i)
         exit(write(2, "ERROR\nMAP NOT VA=!!\n", 20));
     }
 }
-
-
-// void	check_path(char **map, int y, int x, t_game *game)
-// {
-// 	if (map[y][x] == '1')
-// 		return ;
-// 	else if (is_redir(map[y][x]) == true || map[y][x] == '0')
-// 	{
-// 		map[y][x] = '1';
-// 		game->p++;
-// 	}
-// 	// map[y][x] = '1';
-// 	check_path(map, y, x + 1, game);
-// 	check_path(map, y + 1, x, game);
-// 	check_path(map, y, x - 1, game);
-// 	check_path(map, y - 1, x, game);
-// }
 
 int	line_parse(char **str, t_game *g, int j, int c)
 {
@@ -261,54 +241,49 @@ void	handle_map(char **str)
 	if(t.x != 1)
 		exit(write(2, "ERROR\nMAP NOT VALID!!\n", 22));
 }
-void	check_number(char **c)
+void	check_number(char **c, t_path *l, char *str)
 {
-	// if (!(n <= 255 && n >= 0))
-	// {
-	// 	exit(write(2, "ERROR\nBAD RGB\n", 14));
-	// }
 	int	i;
-	// int	n;
 
 	i = 0;
 	while (c[i])
 	{
 		if (!(ft_atoi(c[i]) <= 255 && ft_atoi(c[i]) >= 0))
-		{
 			exit(write(2, "ERROR\nBAD RGB\n", 14));
-		}
 		i++;
 	}
-	
-	
+	if (ft_strncmp(str, "C ", 2) == 0)
+	{
+		l->c_r = ft_atoi(c[0]);
+		l->c_g = ft_atoi(c[1]);
+		l->c_b = ft_atoi(c[2]);
+	}
+	else
+	{
+		l->f_r = ft_atoi(c[0]);
+		l->f_g = ft_atoi(c[1]);
+		l->f_b = ft_atoi(c[2]);
+	}
+	// free_d(c);
 }
-// void	init_path(t_path *p)
-// {
-// 	p->EA = NULL;
-// 	p->WE = NULL;
-// 	p->NO = NULL;
-// 	p->SO = NULL;
-// }
+
 void	fill_path(char *s, char *l, t_path *p)
 {
 	if (ft_strncmp(s, "NO", 2) == 0)
-		p->NO = l;
+		p->NO = ft_strdup(l);
 	else if (ft_strncmp(s, "WE", 2) == 0)
-		p->WE = l;
+		p->WE = ft_strdup(l);
 	else if (ft_strncmp(s, "SO", 2) == 0)
-		p->SO = l;
+		p->SO = ft_strdup(l);
 	else if (ft_strncmp(s, "EA", 2) == 0)
-		p->EA = l;
-	
+		p->EA = ft_strdup(l);
 }
 void	handle_redir(char *str, t_path *s)
 {
 	int i;
 	char	**l;
-	// t_path path ;
-
-	// init_path(&path);
 	i = 2;
+
 	l = ft_split(str, ' ');
 	if(!l[1] || str_long(l) != 2)
 		exit(write(2, "ERROR\nbad [PATH]\n", 17));
@@ -318,25 +293,40 @@ void	handle_redir(char *str, t_path *s)
 	else
 		close(i);
 	fill_path(l[0],l[1], s);
+	free_d(l);
 }
 
+void	free_d(char **t)
+{
+	int i;
+
+	i = -1;
+	while (t[++i])
+	{
+		free(t[i]);
+	}
+	free(t);
+}
 bool	check_arg(char **c)
 {
+	char **l = NULL;
 	int j = -1;
 	while (c[++j])
 	{
-		char **l = ft_split(c[j], ' ');
+		l = ft_split(c[j], ' ');
 		if(str_long(l) != 1)
+		{
+			free_d(l);
 			return (true);
+		}
+		free_d(l);
 	}
-	
 	return false;
 }
 void	check_path(char *str, t_path *l)
 {
 	int		i;
 	char	**c;
-
 	i = 0;
 	if (ft_strncmp(str, "C ", 2) == 0 || ft_strncmp(str, "F ", 2) == 0)
 	{
@@ -352,8 +342,12 @@ void	check_path(char *str, t_path *l)
 		}
 		c = ft_split(&str[i], ',');
 		if(str_long(c) != 3 || check_arg(c) == true)
+		{
+			free_d(c);
 			exit(write(2, "ERROR\nerror many arg\n", 21));
-		check_number(c);
+		}
+		check_number(c, l, str);
+		free_d(c);
 	}
 	else
 		handle_redir(str, l);
@@ -381,21 +375,19 @@ void	emt_line(char *line)
 }
 void	parse_map(char **str, t_game *game, t_path *l)
 {
-	int j = 0;
+	int		j;
 	t_elem	elem;
-	bool x = false;
+
+	j = 0;
 	init_elem(&elem);
-	while (str[j] && x == false)
+	while (str[j])
 	{
 		if (str[j][0] == ' ')
 			skip_sp(&str[j]);
 		if (fill_elem(&str[j][0], &elem , l) == false)
 			exit(write(2, "ERROR\nbad lines\n", 16));
 		else if (elem.c == 1 && elem.f == 1 && elem.no == 1 && elem.ea == 1 && elem.we == 1 && elem.so == 1)
-		{
-			x = true;
 			break;
-		}
 		j++;
 	}
 	if (elem.c != 1 || elem.f != 1 || elem.no != 1 || elem.ea != 1 || elem.we != 1 || elem.so != 1)
@@ -403,4 +395,5 @@ void	parse_map(char **str, t_game *game, t_path *l)
 	check_li(game->ls, str[j+1]);
 	handle_map(&str[j+1]);
 	game->map = &str[j+1];
+	// free_d(str);
 }

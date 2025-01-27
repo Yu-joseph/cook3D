@@ -6,7 +6,7 @@
 /*   By: eismail <eismail@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 18:04:11 by eismail           #+#    #+#             */
-/*   Updated: 2025/01/26 21:12:22 by eismail          ###   ########.fr       */
+/*   Updated: 2025/01/27 10:29:36 by eismail          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -377,7 +377,7 @@ void pint_bg(mlx_image_t *img, double x, double y)
 	double j;
 	int sky_color;
 	int flor_color;
-	
+	//yssf
 	sky_color = rgb(125, 166, 189, 255);
 	flor_color = rgb(117,107,93,255);
 	i = x;
@@ -454,7 +454,7 @@ void reander_walls(t_game *data, double **rays)
 		dis_plane = (W / 2) / tan(FOV_ANGLE / 2);
 		fill_rays(data, rays[i], i, dis);
 		wall_height = (CELL / dis) * dis_plane;
-		rectangle(data, i * WALL_STRIP_WIDTH, (H / 2) - (wall_height/ 2), WALL_STRIP_WIDTH, wall_height);
+		// rectangle(data, i * WALL_STRIP_WIDTH, (H / 2) - (wall_height/ 2), WALL_STRIP_WIDTH, wall_height);
 		i++;
 		angle += FOV_ANGLE / NUM_RAYS;
 	}
