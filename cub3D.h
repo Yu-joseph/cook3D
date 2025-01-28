@@ -27,7 +27,7 @@
 #include "get/get_next_line.h"
 
 # define CELL 20
-# define PLAYER 5
+# define PLAYER 4
 # define W 1280
 # define H 1100
 # define MINI_W 250
@@ -155,11 +155,18 @@ typedef struct s_game
     mlx_image_t             *yssf;
 }t_game;
 /*************************/
+void fill_rays(t_game *data, double *ray, int i, double dis);
+void minimap(t_game *data);
+void ft_keys(t_game *data);
+void animation(t_game *data);
+void draw_square(void *img, int startx, int starty, int size, int color);
+int *minimap_size(t_game *data);
+void rander_minimap(t_game *data, bool p);
 void clean_img(t_game *data);
 void load_animation(t_game *data);
 void mouse_mv(t_game *data);
 int rgb(int r, int g, int b, int a);
-void pint_bg(mlx_image_t *img, double x, double y);
+void pint_bg(t_game *data, mlx_image_t *img, double x, double y);
 t_ply_info init_ply();
 char **get_map(char *file);
 void ft_hook(void* param);
