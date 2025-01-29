@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   map_y.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eismail <eismail@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ysouhail <ysouhail@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 13:09:58 by ysouhail          #+#    #+#             */
-/*   Updated: 2025/01/27 10:58:15 by eismail          ###   ########.fr       */
+/*   Updated: 2025/01/28 15:26:15 by ysouhail         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -241,10 +241,10 @@ void	handle_map(char **str)
 	if(t.x != 1)
 		exit(write(2, "ERROR\nMAP NOT VALID!!\n", 22));
 }
-void	check_number(char **c, t_path *l, char *str)
+void	check_number(char **c, t_path *l , char *str)
 {
 	int	i;
-
+	// (void)game;
 	i = 0;
 	while (c[i])
 	{
@@ -254,12 +254,14 @@ void	check_number(char **c, t_path *l, char *str)
 	}
 	if (ft_strncmp(str, "C ", 2) == 0)
 	{
+		// printf("c= %s, %s, %s\n",c[0], c[1], c[2]);
 		l->c_r = ft_atoi(c[0]);
 		l->c_g = ft_atoi(c[1]);
 		l->c_b = ft_atoi(c[2]);
 	}
 	else
 	{
+		// printf("F= %s, %s, %s\n",c[0], c[1], c[2]);
 		l->f_r = ft_atoi(c[0]);
 		l->f_g = ft_atoi(c[1]);
 		l->f_b = ft_atoi(c[2]);
@@ -327,6 +329,7 @@ void	check_path(char *str, t_path *l)
 {
 	int		i;
 	char	**c;
+
 	i = 0;
 	if (ft_strncmp(str, "C ", 2) == 0 || ft_strncmp(str, "F ", 2) == 0)
 	{
@@ -384,7 +387,7 @@ void	parse_map(char **str, t_game *game, t_path *l)
 	{
 		if (str[j][0] == ' ')
 			skip_sp(&str[j]);
-		if (fill_elem(&str[j][0], &elem , l) == false)
+		if (fill_elem(&str[j][0], &elem, l) == false)
 			exit(write(2, "ERROR\nbad lines\n", 16));
 		else if (elem.c == 1 && elem.f == 1 && elem.no == 1 && elem.ea == 1 && elem.we == 1 && elem.so == 1)
 			break;
@@ -395,5 +398,4 @@ void	parse_map(char **str, t_game *game, t_path *l)
 	check_li(game->ls, str[j+1]);
 	handle_map(&str[j+1]);
 	game->map = &str[j+1];
-	// free_d(str);
 }

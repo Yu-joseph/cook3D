@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eismail <eismail@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ysouhail <ysouhail@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 12:01:10 by ysouhail          #+#    #+#             */
-/*   Updated: 2025/01/27 11:24:22 by eismail          ###   ########.fr       */
+/*   Updated: 2025/01/28 15:25:35 by ysouhail         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -188,6 +188,8 @@ mlx_image_t	*get_texture(t_game *data, int ***clr, int i)
 //         j++;
 //     }
 // }
+
+
 void draw_wall(t_game *data, double t_pix, double b_pix, double wall_h, int i)
 {
     mlx_image_t *txt;
@@ -199,9 +201,7 @@ void draw_wall(t_game *data, double t_pix, double b_pix, double wall_h, int i)
 	img_y = 0;
     txt = get_texture(data, &color, i);
 	if (!txt)
-	{
 		exit(write(2, "ERROR\nNo Imgaes", 15));
-	}
     if (data->rays[i].vertical == true)
         img_x = ((data->rays[i].y / CELL) - floor(data->rays[i].y / CELL)) * txt->height;
     else
@@ -210,14 +210,12 @@ void draw_wall(t_game *data, double t_pix, double b_pix, double wall_h, int i)
     if (wall_h > H)
         texture_pos = texture_step * ((wall_h - H) / 2);
 	else
-	{
         texture_pos = 0;
-    }
     while (j < wall_h)
     {
         if (t_pix + j >= H)
             break;
-		 if (t_pix + j >= 0)
+		if (t_pix + j >= 0)
         {
             img_y = (int)texture_pos % txt->height;
             mlx_put_pixel(data->game, b_pix, (t_pix + j), color[img_y][img_x]);
@@ -229,17 +227,14 @@ void draw_wall(t_game *data, double t_pix, double b_pix, double wall_h, int i)
 
 void draw_texture(t_game *data)
 {
-    // static double k;
     int i = 0;
     double t_pix = 0;
 	double b_pix = 0;
     while (i < NUM_RAYS)
     {
-        // b_pix = (H / 2) + (data->rays[i].wall_height / 2);
         t_pix = (H / 2) - (data->rays[i].wall_height / 2);
         if (t_pix < 0)
             t_pix = 0;
-		// printf("wall_hight...%f...\n",  data->rays[i].wall_height);
         draw_wall(data, t_pix, b_pix, data->rays[i].wall_height, i);
 		b_pix += WALL_STRIP_WIDTH;
         i++;
@@ -279,22 +274,27 @@ void    free_path(t_path *p, t_game *g)
     mlx_delete_image(g->mlx, g->i_we);
     mlx_delete_texture(g->we);
 }
-void l_(void)
+void aa(void)
 {
 	system("leaks cub3D");
 }
 int	main(int ac, char **av)
 {
+	atexit(aa);
 	t_path l;
-	atexit(l_);
+	char **map;
+	t_game game;
+
 	if(ac  != 2)
 		return (1);
 	(void) ac;
-	t_game game;
 	if(check_name(av[1]) == false)
 		return (1);
-	char **map = check_map(av[1], &game);
+	map = check_map(av[1], &game);
 	parse_map(map, &game, &l);
+	game.path = &l;
+	printf("ccc= %d, %d, %d\n",game.path->c_r, game.path->c_g, game.path->c_b);
+	printf("ffff= %d, %d, %d\n",game.path->f_r, game.path->f_g, game.path->f_b);
 	game.ply = init_ply();
 	ft_mlx_init(&game);
 	load_img(&game, &l);
