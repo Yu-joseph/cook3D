@@ -6,20 +6,20 @@
 /*   By: eismail <eismail@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/28 11:27:16 by eismail           #+#    #+#             */
-/*   Updated: 2025/01/28 11:32:46 by eismail          ###   ########.fr       */
+/*   Updated: 2025/01/28 13:22:59 by eismail          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3D.h"
 
-double distance(double x0, double y0, double x1,double y1)
+double	distance(double x0, double y0, double x1, double y1)
 {
 	return (sqrt(((x1 - x0) * (x1 - x0)) + ((y1 - y0) * (y1 - y0))));
 }
 
-void norm_engle(t_game *data, double *angle)
+void	norm_engle(t_game *data, double *angle)
 {
-	*angle = remainder(*angle , (2 * M_PI));
+	*angle = remainder(*angle, (2 * M_PI));
 	if (*angle < 0)
 		*angle = (2 * M_PI) + *angle;
 	if (*angle > 0 && *angle < M_PI)
@@ -30,8 +30,8 @@ void norm_engle(t_game *data, double *angle)
 		data->right = true;
 	else
 		data->right = false;
-	data->left   = !data->right;
-	data->up     = !data->down;
+	data->left = !data->right;
+	data->up = !data->down;
 }
 
 int	ft_height(char **s)
@@ -46,9 +46,9 @@ int	ft_height(char **s)
 
 int	ft_wedth(char **s)
 {
-	size_t max_lenght;
-	int i;
-	
+	size_t	max_lenght;
+	int		i;
+
 	i = 0;
 	max_lenght = ft_strlen(s[0]);
 	while (s[i])
@@ -60,9 +60,9 @@ int	ft_wedth(char **s)
 	return (max_lenght);
 }
 
-int *minimap_size(t_game *data)
+int	*minimap_size(t_game *data)
 {
-	int *bounds;
+	int	*bounds;
 
 	bounds = malloc(sizeof(int) * 4);
 	if (!bounds)

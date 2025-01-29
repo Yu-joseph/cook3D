@@ -6,7 +6,7 @@
 /*   By: eismail <eismail@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/28 10:55:39 by eismail           #+#    #+#             */
-/*   Updated: 2025/01/28 12:54:33 by eismail          ###   ########.fr       */
+/*   Updated: 2025/01/28 13:04:00 by eismail          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,11 @@ void pint_bg(t_game *data, mlx_image_t *img, double x, double y)
 	double j;
 	int sky_color;
 	int flor_color;
-	(void) data;
+
+	printf("c %d %d %d\n",data->path->c_r, data->path->c_g, data->path->c_b);
+	printf("f %d %d %d\n",data->path->f_r, data->path->f_g, data->path->f_b);
+	sky_color = rgb(data->path->c_r, data->path->c_g, data->path->c_b, 255);
+	flor_color = rgb(data->path->f_r, data->path->f_g, data->path->f_b, 255);
 	sky_color = rgb(125, 166, 189, 255);
 	flor_color = rgb(117,107,93,255);
 	i = x;
