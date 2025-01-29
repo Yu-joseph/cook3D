@@ -6,7 +6,7 @@
 /*   By: ysouhail <ysouhail@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 12:01:10 by ysouhail          #+#    #+#             */
-/*   Updated: 2025/01/27 11:05:27 by ysouhail         ###   ########.fr       */
+/*   Updated: 2025/01/28 15:25:35 by ysouhail         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -240,23 +240,41 @@ void draw_texture(t_game *data)
         i++;
     }
 }
-
-void	free_path(t_path *p, t_game *g)
+void free_int(int **arry, int size)
 {
-	free(p->EA);
-	free(p->SO);
-	free(p->WE);
-	free(p->NO);
-	mlx_delete_image(g->mlx, g->i_ea);
-	mlx_delete_texture(g->ea);
-	mlx_delete_image(g->mlx, g->i_so);
-	mlx_delete_texture(g->so);
-	mlx_delete_image(g->mlx, g->i_no);
-	mlx_delete_texture(g->no);
-	mlx_delete_image(g->mlx, g->i_we);
-	mlx_delete_texture(g->we);
+	int i;
+
+	i = -1;
+	while (++i < size)
+	{
+		free(arry[i]);
+	}
+	free(arry);
 }
-void aa()
+void    free_path(t_path *p, t_game *g)
+{
+    free(p->EA);
+    free(p->SO);
+    free(p->WE);
+    free(p->NO);
+	
+	free_int(g->clr.ea, g->i_ea->height);
+    mlx_delete_image(g->mlx, g->i_ea);
+    mlx_delete_texture(g->ea);
+	
+	free_int(g->clr.so, g->i_so->height);
+    mlx_delete_image(g->mlx, g->i_so);
+    mlx_delete_texture(g->so);
+	
+	free_int(g->clr.no, g->i_no->height);
+    mlx_delete_image(g->mlx, g->i_no);
+    mlx_delete_texture(g->no);
+	
+	free_int(g->clr.we, g->i_we->height);
+    mlx_delete_image(g->mlx, g->i_we);
+    mlx_delete_texture(g->we);
+}
+void aa(void)
 {
 	system("leaks cub3D");
 }
@@ -264,28 +282,27 @@ int	main(int ac, char **av)
 {
 	atexit(aa);
 	t_path l;
+	char **map;
+	t_game game;
+
 	if(ac  != 2)
 		return (1);
 	(void) ac;
-	t_game game;
 	if(check_name(av[1]) == false)
 		return (1);
-	char **map = check_map(av[1], &game);
+	map = check_map(av[1], &game);
 	parse_map(map, &game, &l);
+	game.path = &l;
+	printf("ccc= %d, %d, %d\n",game.path->c_r, game.path->c_g, game.path->c_b);
+	printf("ffff= %d, %d, %d\n",game.path->f_r, game.path->f_g, game.path->f_b);
 	game.ply = init_ply();
-	// system("leaks cub3D");
 	ft_mlx_init(&game);
 	load_img(&game, &l);
 	mlx_loop_hook(game.mlx, ft_hook, &game);
 	mlx_loop(game.mlx);
-	// int i = 0;
+	clean_img(&game);
 	free_path(&l, &game);
 	free_d(map);
-	// while (game.map[i])
-	// {
-	// 	free(game.map[i]);
-	// 	i++;
-	// }
 	free(game.ls);
 	return (0);
 }
