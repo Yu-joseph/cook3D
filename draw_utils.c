@@ -6,18 +6,18 @@
 /*   By: eismail <eismail@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/28 10:55:39 by eismail           #+#    #+#             */
-/*   Updated: 2025/01/28 13:04:00 by eismail          ###   ########.fr       */
+/*   Updated: 2025/01/29 13:39:12 by eismail          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3D.h"
 
-void pint(mlx_image_t *img, int h, int w, int color)
+void	pint(mlx_image_t *img, int h, int w, int color)
 {
-	int i;
-	int j;
-	
-	i =0;
+	int	i;
+	int	j;
+
+	i = 0;
 	while (i < h)
 	{
 		j = 0;
@@ -30,66 +30,72 @@ void pint(mlx_image_t *img, int h, int w, int color)
 	}
 }
 
-void draw_line(mlx_image_t *mlx, int x0, int y0, int x1, int y1, int color)
+t_line	*init_line(int x0, int y0, int x1, int y1)
 {
-	int dy = y1 - y0;
-	int dx = x1 - x0;
-	int steps = 0;;
-	float	x_inc = 0;
-	float	y_inc = 0;
-	int i = 0;
-	float y = y0;
-	float x = x0;
+	t_line	*line;
 
-	if (abs(dx) > abs(dy))
-		steps = abs(dx);
+	line = malloc(sizeof(t_line));
+	line->dy = y1 - y0;
+	line->dx = x1 - x0;
+	line->steps = 0;
+	line->x_inc = 0;
+	line->y_inc = 0;
+	if (abs(line->dx) > abs(line->dy))
+		line->steps = abs(line->dx);
 	else 
-		steps = abs(dy);
-	x_inc = (float)dx / (float)steps;
-	y_inc = (float)dy / (float)steps;
-	while(i < steps && y >= 0 && x >= 0)
+		line->steps = abs(line->dy);
+	line->x_inc = (float)line->dx / (float)line->steps;
+	line->y_inc = (float)line->dy / (float)line->steps;
+	return (line);
+}
+
+// void	draw_line(mlx_image_t *mlx, int x0, int y0, int x1, int y1)
+// {
+// 	int		i;
+// 	t_line	*line;
+
+// 	i = 0;
+// 	line = init_line(x0, y0, x1, y1);
+// 	while(i < line->steps && y0 >= 0 && x0 >= 0)
+// 	{
+// 		mlx_put_pixel(mlx, round(x0), round(y0), 0xFF0000FF);
+// 		x0 += line->x_inc;
+// 		y0 += line->y_inc;
+// 		i++;
+// 	}
+// 	free(line);
+// }
+
+void	draw_square(void *img, int startx, int starty, int size)
+{
+	int	i;
+	int	j;
+
+	i = starty;
+	while (i < (starty + size))
 	{
-		mlx_put_pixel(mlx, round(x), round(y), color);
-		x += x_inc;
-		y += y_inc;
+		j = startx;
+		while (j < (startx + size))
+		{
+			mlx_put_pixel(img, j, i, 0xFF0000FF);
+			j++;
+		}
 		i++;
 	}
 }
 
-void draw_square(void *img, int startx, int starty, int size, int color) 
+void	pint_bg(t_game *data, mlx_image_t *img, double x, double y)
 {
-    int i;
-	int j;
-	
-	i = starty;
-    while (i < (starty + size)) 
-	{
-		j = startx;
-        while (j < (startx + size)) 
-		{
-            mlx_put_pixel(img,j , i, color);
-			j++;
-		}
-		i++;
-    }
-}
+	double	i;
+	double	j;
+	int		sky_color;
+	int		flor_color;
 
-void pint_bg(t_game *data, mlx_image_t *img, double x, double y)
-{
-	double i;
-	double j;
-	int sky_color;
-	int flor_color;
-
-	printf("c %d %d %d\n",data->path->c_r, data->path->c_g, data->path->c_b);
-	printf("f %d %d %d\n",data->path->f_r, data->path->f_g, data->path->f_b);
 	sky_color = rgb(data->path->c_r, data->path->c_g, data->path->c_b, 255);
 	flor_color = rgb(data->path->f_r, data->path->f_g, data->path->f_b, 255);
-	sky_color = rgb(125, 166, 189, 255);
-	flor_color = rgb(117,107,93,255);
 	i = x;
 	while (i < W)
-	{	
+	{
 		j = y;
 		while (j < H)
 		{
@@ -97,32 +103,6 @@ void pint_bg(t_game *data, mlx_image_t *img, double x, double y)
 				mlx_put_pixel(img, i, j, sky_color);
 			else
 				mlx_put_pixel(img, i, j, flor_color);
-			j++;
-		}
-		i++;
-	}
-}
-
-void rectangle(t_game *data, double x, double y, double width, double height)
-{
-	double i;
-	double j;
-	if (x < 0)
-		x = 0;
-    if (y < 0) 
-		y = 0;
-    if (x + width > data->game->width)
-		width = data->game->width - x;
-    if (y + height > data->game->height)
-		height = data->game->height - y;
-	
-	i = x;
-	while (i < (x + width))
-	{	
-		j = y;
-		while (j < (y + height))
-		{
-			mlx_put_pixel(data->game, i, j, data->color);
 			j++;
 		}
 		i++;

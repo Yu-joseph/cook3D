@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ysouhail <ysouhail@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: eismail <eismail@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 12:01:10 by ysouhail          #+#    #+#             */
-/*   Updated: 2025/01/28 15:25:35 by ysouhail         ###   ########.fr       */
+/*   Updated: 2025/01/30 11:48:19 by eismail          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -257,7 +257,8 @@ void    free_path(t_path *p, t_game *g)
     free(p->SO);
     free(p->WE);
     free(p->NO);
-	
+	if (!g)
+		return ;
 	free_int(g->clr.ea, g->i_ea->height);
     mlx_delete_image(g->mlx, g->i_ea);
     mlx_delete_texture(g->ea);
@@ -296,7 +297,8 @@ int	main(int ac, char **av)
 	printf("ccc= %d, %d, %d\n",game.path->c_r, game.path->c_g, game.path->c_b);
 	printf("ffff= %d, %d, %d\n",game.path->f_r, game.path->f_g, game.path->f_b);
 	game.ply = init_ply();
-	ft_mlx_init(&game);
+	if (!ft_mlx_init(&game))
+		return (free_path(&l, NULL),free_d(map),free(game.ls),1);
 	load_img(&game, &l);
 	mlx_loop_hook(game.mlx, ft_hook, &game);
 	mlx_loop(game.mlx);

@@ -6,7 +6,7 @@
 /*   By: eismail <eismail@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/28 12:22:36 by eismail           #+#    #+#             */
-/*   Updated: 2025/01/28 13:15:17 by eismail          ###   ########.fr       */
+/*   Updated: 2025/01/30 13:13:24 by eismail          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,13 @@ void	clean_img(t_game *data)
 	i = 0;
 	while (i < ANIM)
 	{
-		mlx_delete_image(data->mlx, data->img[i]);
+		if (data->img[i])
+			mlx_delete_image(data->mlx, data->img[i]);
 		i++;
 	}
 }
 
-void	load_animation(t_game *data)
+bool	load_animation(t_game *data)
 {
 	int				i;
 	char			*img_name;
@@ -32,15 +33,17 @@ void	load_animation(t_game *data)
 	char			*nums;
 	mlx_texture_t	*texture[ANIM];
 
-	i = 0;
+	i = -1;
 	nums = "123456789ABCDE";
-	while (i < ANIM)
+	while (++i < ANIM)
 	{
 		img_name = ft_substr(nums, i, 1);
 		tmp = ft_strjoin("a/", img_name);
 		free(img_name);
 		img_name = ft_strjoin(tmp, ".png");
 		texture[i] = mlx_load_png(img_name);
+		if (!texture[i])
+			return (clean_img(data), free(tmp), free(img_name), false);
 		data->img[i] = mlx_texture_to_image(data->mlx, texture[i]);
 		mlx_delete_texture(texture[i]);
 		mlx_image_to_window(data->mlx, data->img[i],
@@ -48,8 +51,8 @@ void	load_animation(t_game *data)
 		data->img[i]->enabled = false;
 		free(tmp);
 		free(img_name);
-		i++;
 	}
+	return (true);
 }
 
 void	animation(t_game *data)
@@ -57,7 +60,7 @@ void	animation(t_game *data)
 	int			animation_speed;
 	static int	current_image;
 
-	animation_speed = 2;
+	animation_speed = 3;
 	data->frame_counter++;
 	if (data->frame_counter % animation_speed == 0)
 	{

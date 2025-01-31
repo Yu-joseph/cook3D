@@ -96,6 +96,14 @@ typedef struct s_ply_info
     double movestep;
 }t_ply_info;
 
+typedef struct s_line
+{
+    int 	dy;
+    int 	dx;
+    int 	steps;
+    float	x_inc;
+    float	y_inc;
+}   t_line;
 typedef struct s_texters
 {
     double  x;
@@ -153,17 +161,17 @@ typedef struct s_game
     int                     c_b;
     t_clr                   clr;
     mlx_image_t             *yssf;
-}t_game;
+}   t_game;
 /*************************/
 void fill_rays(t_game *data, double *ray, int i, double dis);
 void minimap(t_game *data);
 void ft_keys(t_game *data);
 void animation(t_game *data);
-void draw_square(void *img, int startx, int starty, int size, int color);
+void draw_square(void *img, int startx, int starty, int size);
 int *minimap_size(t_game *data);
 void rander_minimap(t_game *data, bool p);
 void clean_img(t_game *data);
-void load_animation(t_game *data);
+bool load_animation(t_game *data);
 void mouse_mv(t_game *data);
 int rgb(int r, int g, int b, int a);
 void pint_bg(t_game *data, mlx_image_t *img, double x, double y);
@@ -174,7 +182,7 @@ void ft_move(t_game *data);
 void rebiuld(t_game *data);
 void cast_all_rays(t_game *data);
 void reander_walls(t_game *data, double **rays);
-void rectangle(t_game *data, double x, double y, double width, double height);
+void rectangle(t_game *data, double x, double y);
 double *cmp_hv(t_game *data, double startx,double starty, double angle);
 double *get_distance(t_game *data, double *horwallhit, double *verwallhit);
 void norm_engle(t_game *data, double *angle);
@@ -183,13 +191,11 @@ double *wallhit(t_game *data, double xinter, double yinter , double *steps);
 double distance(double x0, double y0, double x1,double y1);
 bool haswall(double x, double y, t_game *data);
 bool phaswall(double x, double y, t_game *data);
-void draw_line(mlx_image_t *mlx, int x0, int y0, int x1, int y1, int color);
-void ft_mlx_init(t_game *data);
+// void draw_line(mlx_image_t *mlx, int x0, int y0, int x1, int y1);
+bool ft_mlx_init(t_game *data);
 void pint(mlx_image_t *img, int h, int w, int color);
 int	ft_wedth(char **s);
 int	ft_height(char **s);
-int cross(t_game *data);
-int close_window(int keycode, void *param);
 /*************************/
 void	parse_map(char **str, t_game *game, t_path *l);
 char	**check_map(char *str, t_game *game);

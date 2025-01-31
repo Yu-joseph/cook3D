@@ -6,7 +6,7 @@
 /*   By: eismail <eismail@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 18:04:11 by eismail           #+#    #+#             */
-/*   Updated: 2025/01/28 13:10:27 by eismail          ###   ########.fr       */
+/*   Updated: 2025/01/30 11:46:53 by eismail          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include <stdio.h>
 #include "cub3D.h"
 
-void	ft_mlx_init(t_game *data)
+bool	ft_mlx_init(t_game *data)
 {
 	mlx_image_t	*bg;
 
@@ -36,7 +36,9 @@ void	ft_mlx_init(t_game *data)
 	pint(data->wall, CELL, CELL, 0xFFFFFF00);
 	mlx_set_cursor_mode(data->mlx, MLX_MOUSE_DISABLED);
 	rander_minimap(data, true);
-	load_animation(data);
+	if(!load_animation(data))
+		return(false);
+	return (true);
 }
 
 void	fill_rays(t_game *data, double *ray, int i, double dis)
@@ -79,7 +81,7 @@ void	minimap(t_game *d)
 				mlx_put_pixel(d->minimap, x, y, 0xFFFFFF99);
 		}
 	}
-	draw_square(d->minimap, MINI_W / 2, MINI_H / 2, PLAYER, 0xFF0000FF);
+	draw_square(d->minimap, MINI_W / 2, MINI_H / 2, PLAYER);
 	free(arry);
 }
 

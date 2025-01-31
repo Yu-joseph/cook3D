@@ -1,18 +1,18 @@
-EA        /Users/eismail/Desktop/cook3D/text/this.png
-WE      /Users/eismail/Desktop/cook3D/text/how.png
+EA        /Users/eismail/Desktop/cook3D/text/i4.png
+WE      /Users/eismail/Desktop/cook3D/text/i2.png
 
 
 
 
-NO /Users/eismail/Desktop/cook3D/text/doyou.png
-SO /Users/eismail/Desktop/cook3D/text/noplace.png     
-C                 125, 166, 189
-F 117,107,93
+NO /Users/eismail/Desktop/cook3D/text/i3.png
+SO /Users/eismail/Desktop/cook3D/text/i1.png     
+C                 0,0,0
+F 78,75,55
 
 
 
 1111111111 
-1000000001     111
+10E0000001     111
 1111000001     101 
 1000000001     111  
 1000001001
@@ -21,7 +21,7 @@ F 117,107,93
 1111101011111111111111111111111
 111110100000000001
     10100000111001
-    10100N000001001
+    101000000001001
     10100011111001
     10100001100001
     10100000000001
