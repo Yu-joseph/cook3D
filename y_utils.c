@@ -6,7 +6,7 @@
 /*   By: ysouhail <ysouhail@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 12:26:18 by ysouhail          #+#    #+#             */
-/*   Updated: 2024/12/28 15:25:05 by ysouhail         ###   ########.fr       */
+/*   Updated: 2025/01/29 22:15:18 by ysouhail         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,7 @@ bool	is_redir(char c)
 	return (false);
 }
 
-
-int str_len(char *str)
+int	str_len(char *str)
 {
 	int	i;
 
@@ -34,18 +33,22 @@ int str_len(char *str)
 
 bool	check_name(char *str)
 {
-	bool x = false;
-	int i = 0;
+	bool	x;
+	int		i;
+
+	i = 0;
+	x = false;
 	while (str[i])
 	{
-		if (str_cmp(&str[i], ".cub") == 0 && str_len(&str[i])  >= 4)
+		if (str_cmp(&str[i], ".cub") == 0 && str_len(&str[i]) >= 4)
 			x = true;
-		else if(str_len(&str[i])  >= 4)
+		else if (str_len(&str[i]) >= 4)
 			x = false;
 		i++;
 	}
 	return (x);
 }
+
 int	str_cmp(char *s1, char *s2)
 {
 	int	i;

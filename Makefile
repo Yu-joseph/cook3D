@@ -4,7 +4,8 @@ CFLAGS = -Wall -Wextra -Werror #-g -fsanitize=address
 
 LIB = libft/libft.a
 
-SRC = cub.c get/get_next_line.c get/get_next_line_utils.c main.c map_y.c y_utils.c animation_utils.c calcul_utils.c draw_utils.c hook_utils.c render_utils.c wallhit_utils.c  ray_cast.c
+SRC = cub.c get/get_next_line.c get/get_next_line_utils.c main.c map_y.c y_utils.c animation_utils.c calcul_utils.c draw_utils.c hook_utils.c render_utils.c wallhit_utils.c  ray_cast.c	dr.c\
+		map_y2.c map_y3.c	map_y4.c	map_y5.c
 
 OBJ = $(SRC:.c=.o)
 

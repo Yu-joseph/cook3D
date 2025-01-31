@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eismail <eismail@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ysouhail <ysouhail@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 18:04:11 by eismail           #+#    #+#             */
-/*   Updated: 2025/01/28 12:46:30 by eismail          ###   ########.fr       */
+/*   Updated: 2025/01/30 11:32:09 by ysouhail         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ t_ply_info init_ply()
 	ply.rotation_angle = 0;
 	ply.side_angle = 0;
 	ply.move_speed = 2.0;
-	ply.rotationSpeed = 2 * (M_PI / 180);
+	ply.rotationspeed = 2 * (M_PI / 180);
 	ply.movestep = 0;
 	return (ply);
 }

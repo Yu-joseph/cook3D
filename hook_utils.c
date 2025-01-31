@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   hook_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eismail <eismail@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ysouhail <ysouhail@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/28 12:34:13 by eismail           #+#    #+#             */
-/*   Updated: 2025/01/28 12:36:34 by eismail          ###   ########.fr       */
+/*   Updated: 2025/01/30 11:32:09 by ysouhail         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,8 +86,8 @@ void ft_keys(t_game *data)
 	if (mlx_is_key_down(data->mlx, MLX_KEY_D))
 		data->ply.side_direction = (+1);
 	rebiuld(data);
-	data->ply.rotation_angle += data->ply.turn_direction * data->ply.rotationSpeed;
-	data->ply.side_angle += data->ply.turn_direction * data->ply.rotationSpeed;
+	data->ply.rotation_angle += data->ply.turn_direction * data->ply.rotationspeed;
+	data->ply.side_angle += data->ply.turn_direction * data->ply.rotationspeed;
 	data->ply.movestep = data->ply.walk_direction * data->ply.move_speed;
 }
 

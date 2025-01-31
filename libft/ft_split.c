@@ -6,7 +6,7 @@
 /*   By: ysouhail <ysouhail@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/15 11:08:04 by eismail           #+#    #+#             */
-/*   Updated: 2024/12/28 19:27:02 by ysouhail         ###   ########.fr       */
+/*   Updated: 2025/01/29 12:13:19 by ysouhail         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ static	size_t	count_strings(const char *s, char c)
 	{
 		while (s[i] == c)
 		{
-			if(c == ',' && (s[i+1] == c || s[i+1] == '\0' ))
+			if (c == ',' && (s[i + 1] == c || s[i + 1] == '\0' ))
 				exit(write(2, "ERROR\nbad slash\n", 16));
 			i++;
 		}

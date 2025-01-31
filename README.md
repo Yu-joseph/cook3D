@@ -127,8 +127,8 @@ I then create a loop that will run until the window is closed. i update the play
 	if (mlx_is_key_down(data->mlx, MLX_KEY_D))
 		data->ply.side_direction = (+1);
 	rebiuld(data); // update the images (the image where I rendar the walls and the image where I draw rays)
-	data->ply.rotation_angle += data->ply.turn_direction * data->ply.rotationSpeed;
-	data->ply.side_angle += data->ply.turn_direction * data->ply.rotationSpeed; 
+	data->ply.rotation_angle += data->ply.turn_direction * data->ply.rotationspeed;
+	data->ply.side_angle += data->ply.turn_direction * data->ply.rotationspeed; 
 }
   ```
 After that I see if the player is trying side ways or forward and update the player position accordingly.
