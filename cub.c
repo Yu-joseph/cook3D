@@ -6,7 +6,7 @@
 /*   By: eismail <eismail@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 18:04:11 by eismail           #+#    #+#             */
-/*   Updated: 2025/01/30 11:46:53 by eismail          ###   ########.fr       */
+/*   Updated: 2025/01/31 10:45:32 by eismail          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,8 @@ bool	ft_mlx_init(t_game *data)
 	pint(data->wall, CELL, CELL, 0xFFFFFF00);
 	mlx_set_cursor_mode(data->mlx, MLX_MOUSE_DISABLED);
 	rander_minimap(data, true);
-	if(!load_animation(data))
-		return(false);
+	if (!load_animation(data))
+		return (false);
 	return (true);
 }
 
@@ -93,8 +93,8 @@ t_ply_info	init_ply(void)
 	ply.walk_direction = 0;
 	ply.rotation_angle = 0;
 	ply.side_angle = 0;
-	ply.move_speed = 2.0;
-	ply.rotationSpeed = 2 * (M_PI / 180);
+	ply.move_speed = 3;
+	ply.rotationspeed = 2 * (M_PI / 180);
 	ply.movestep = 0;
 	return (ply);
 }

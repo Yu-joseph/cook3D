@@ -9,7 +9,7 @@ SRCS := ft_isalpha.c    ft_memcmp.c     ft_strlcat.c    ft_strrchr.c\
 		ft_isalnum.c    ft_memchr.c     ft_strchr.c     ft_strnstr.c    ft_substr.c\
 		ft_strjoin.c ft_strtrim.c ft_split.c ft_itoa.c ft_strmapi.c ft_striteri.c ft_putchar_fd.c\
 		ft_putstr_fd.c ft_putendl_fd.c ft_putnbr_fd.c \
-		
+
 BONUSSRC := ft_lstnew_bonus.c ft_lstadd_front_bonus.c ft_lstsize_bonus.c ft_lstlast_bonus.c\
 			ft_lstadd_back_bonus.c ft_lstdelone_bonus.c ft_lstclear_bonus.c ft_lstiter_bonus.c ft_lstmap_bonus.c\
 
@@ -20,23 +20,23 @@ BONUSOBJS := $(BONUSSRC:.c=.o)
 NAME := libft.a
 HEADER := libft.h
 
-all: $(NAME) 
+all: $(NAME)
 
 $(NAME): $(OBJS) $(HEADER)
-	@ar rcs $(NAME) $(OBJS)
+	ar rcs $(NAME) $(OBJS)
 
 bonus: $(BONUSOBJS) $(HEADER)
-	@ar rcs $(NAME) $(BONUSOBJS)
+	ar rcs $(NAME) $(BONUSOBJS)
 
 %.o: %.c $(HDR)
-	@$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	@rm -fr $(OBJS) $(BONUSOBJS)
+	rm -fr $(OBJS) $(BONUSOBJS)
 
 fclean: clean
-	@rm -fr $(NAME)
+	rm -fr $(NAME)
 
 re: fclean all bonus
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re bonus

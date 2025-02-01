@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ysouhail <ysouhail@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: eismail <eismail@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/04 17:53:23 by eismail           #+#    #+#             */
-/*   Updated: 2024/12/28 09:46:58 by ysouhail         ###   ########.fr       */
+/*   Updated: 2025/01/31 10:54:09 by eismail          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 # include <stdbool.h>
 # include <limits.h>
 # include <stdio.h>
-#include "../get/get_next_line.h"
+# include "../get/get_next_line.h"
 
 typedef struct s_list
 {

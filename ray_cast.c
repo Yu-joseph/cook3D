@@ -6,7 +6,7 @@
 /*   By: eismail <eismail@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/28 10:49:26 by eismail           #+#    #+#             */
-/*   Updated: 2025/01/29 22:15:38 by eismail          ###   ########.fr       */
+/*   Updated: 2025/01/31 11:19:58 by eismail          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,8 @@ double	*ft_horisontal(t_game *data, double startx, double starty, double angl)
 	double	*horwallhit;
 
 	steps = malloc(sizeof(double) * 2);
+	if (!steps)
+		return (NULL);
 	yinter = floor(starty / CELL) * CELL;
 	if (data->down)
 		yinter += CELL;

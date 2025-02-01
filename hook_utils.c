@@ -6,7 +6,7 @@
 /*   By: eismail <eismail@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/28 12:34:13 by eismail           #+#    #+#             */
-/*   Updated: 2025/01/29 22:25:14 by eismail          ###   ########.fr       */
+/*   Updated: 2025/01/31 10:24:50 by eismail          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,8 +93,8 @@ void	ft_keys(t_game *data)
 		data->ply.side_direction = (+1);
 	rebiuld(data);
 	data->ply.rotation_angle += data->ply.turn_direction
-		* data->ply.rotationSpeed;
-	data->ply.side_angle += data->ply.turn_direction * data->ply.rotationSpeed;
+		* data->ply.rotationspeed;
+	data->ply.side_angle += data->ply.turn_direction * data->ply.rotationspeed;
 	data->ply.movestep = data->ply.walk_direction * data->ply.move_speed;
 }
 

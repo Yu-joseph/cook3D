@@ -6,7 +6,7 @@
 /*   By: eismail <eismail@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/28 12:22:36 by eismail           #+#    #+#             */
-/*   Updated: 2025/01/30 13:13:24 by eismail          ###   ########.fr       */
+/*   Updated: 2025/01/31 11:15:54 by eismail          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,16 @@ void	clean_img(t_game *data)
 	}
 }
 
-bool	load_animation(t_game *data)
+void	txt_to_img_to_win(t_game *d, mlx_texture_t *texture, int i)
+{
+	d->img[i] = mlx_texture_to_image(d->mlx, texture);
+	mlx_delete_texture(texture);
+	mlx_image_to_window(d->mlx, d->img[i], (W / 2)
+		- (d->img[i]->width / 2), H - d->img[i]->height);
+	d->img[i]->enabled = false;
+}
+
+bool	load_animation(t_game *d)
 {
 	int				i;
 	char			*img_name;
@@ -43,12 +52,9 @@ bool	load_animation(t_game *data)
 		img_name = ft_strjoin(tmp, ".png");
 		texture[i] = mlx_load_png(img_name);
 		if (!texture[i])
-			return (clean_img(data), free(tmp), free(img_name), false);
-		data->img[i] = mlx_texture_to_image(data->mlx, texture[i]);
-		mlx_delete_texture(texture[i]);
-		mlx_image_to_window(data->mlx, data->img[i],
-			(W / 2) - (data->img[i]->width / 2), H - data->img[i]->height);
-		data->img[i]->enabled = false;
+			return (clean_img(d), free(tmp), free(img_name), false);
+		d->img[i] = mlx_texture_to_image(d->mlx, texture[i]);
+		txt_to_img_to_win(d, texture[i], i);
 		free(tmp);
 		free(img_name);
 	}
